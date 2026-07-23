@@ -12,8 +12,15 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=2"
-JSV  = "app.js?v=2"
+CSSV = "styles.css?v=5"
+JSV  = "app.js?v=3"
+CHATV= "chat.js?v=1"
+
+# ---- dark-mode: default dark (like anderson-it), toggle persists to localStorage ----
+FOUC   = '<script>(function(){try{var t=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>'
+SUN    = '<svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>'
+MOON   = '<svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>'
+TOGGLE = f'<button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">{SUN}{MOON}</button>'
 
 # ---- business facts (verified from bwraps1.com, 2026-07-23) ----
 BIZ      = "B Printing and Wraps"
@@ -25,15 +32,19 @@ PHONE_TEL= "+19282308525"
 EMAIL    = "elitecustomprinting@outlook.com"  # real shop inbox from their site. CONFIRM this is the form destination + activate FormSubmit before launch.
 HOURS    = "Mon-Fri 9am-5pm"
 DOMAIN   = "bwraps1.com"
-MAPS     = "https://maps.google.com/?q=B+Printing+and+Wraps+16551+N+Dysart+Rd+Surprise+AZ"
+MAPS     = "https://maps.app.goo.gl/eGQwKDuvYefatZDTA"      # real directions link from their site
+GOOGLE   = "https://maps.app.goo.gl/v1bZDkvdZy5mf69Z6"      # real Google Business profile (5.0, 20 reviews)
 MAP_EMBED= "https://www.google.com/maps?q=16551+N+Dysart+Rd+%23107+Surprise+AZ+85378&output=embed"
-# socials (verified)
+# socials (verified live on bwraps1.com, 2026-07-23)
 TIKTOK   = "https://www.tiktok.com/@luckstitch"
 IG       = "https://www.instagram.com/bprinting_/"
 FB       = "https://www.facebook.com/bprintingandwraps"
 
+# "Contact" lives in the "Get a quote" button (both point to contact.html) - no duplicate nav item.
 NAV = [("index.html","Home"),("services.html","Services"),("gallery.html","Gallery"),
-       ("about.html","About"),("contact.html","Contact")]
+       ("about.html","About")]
+# footer keeps a direct Contact link so the page is still reachable from the bottom
+FOOT_NAV = NAV + [("contact.html","Contact")]
 
 # ============================ SHARED CHROME ============================
 def head(title, desc, page=""):
@@ -47,6 +58,7 @@ def head(title, desc, page=""):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{CSSV}">
+{FOUC}
 </head><body class="{page}">
 <a class="skip" href="#main">Skip to content</a>'''
 
@@ -61,10 +73,11 @@ def nav(active):
     return f'''<div class="nav-shell"><header class="nav"><div class="nav-in">
   {brandmark()}
   <nav class="nav-links">{links}</nav>
+  {TOGGLE}
   <a class="btn btn-primary btn-sm nav-cta" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>
   <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div></header></div>
-<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a></div>'''
+<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>{TOGGLE}</div>'''
 
 def cta():
     return f'''<section class="cta-band"><div class="wrap"><div class="cta-card reveal">
@@ -77,8 +90,32 @@ def cta():
   <a class="btn btn-ghost-light btn-lg" href="tel:{PHONE_TEL}">Call {PHONE}</a></div>
 </div></div></section>'''
 
+def chat_widget():
+    # Demo assistant: runs fully client-side (see chat.js) - guided quote wizard + canned answers.
+    # No backend/API needed for the demo; wiring it to a real inbox is a one-line change in chat.js.
+    return '''<div class="cw" id="cw">
+  <button class="cw-bubble" id="cw-bubble" type="button" aria-label="Open the B Printing assistant" aria-expanded="false" aria-controls="cw-panel">
+    <svg class="cw-i cw-i-chat" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+    <svg class="cw-i cw-i-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="cw-panel" id="cw-panel" role="dialog" aria-modal="false" aria-labelledby="cw-title" hidden>
+    <div class="cw-head">
+      <span class="cw-avatar" aria-hidden="true">B</span>
+      <div class="cw-head-t"><strong id="cw-title">B Printing Assistant</strong><span><span class="cw-dot"></span> Ask about pricing, services, or hours</span></div>
+      <button class="cw-x-btn" id="cw-close" type="button" aria-label="Close chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="cw-log" id="cw-log" role="log" aria-live="polite" aria-label="Chat messages"></div>
+    <form class="cw-form" id="cw-form" autocomplete="off">
+      <label for="cw-input" class="sr-only">Type your message</label>
+      <input id="cw-input" class="cw-input" type="text" placeholder="Type your message..." maxlength="600" autocomplete="off">
+      <button class="cw-send" id="cw-send" type="submit" aria-label="Send message"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </form>
+    <p class="cw-note">Demo assistant. Don't share passwords or card numbers.</p>
+  </div>
+</div>'''
+
 def footer():
-    cols = "".join(f'<a href="{h}">{t}</a>' for h,t in NAV)
+    cols = "".join(f'<a href="{h}">{t}</a>' for h,t in FOOT_NAV)
     return f'''<footer><div class="wrap foot-grid">
   <div class="foot-brand">
     {brandmark("brand-foot")}
@@ -99,7 +136,9 @@ def footer():
 </div>
 <div class="legal wrap"><span>&copy; 2026 {BIZ}. All rights reserved.</span><span>Proudly local to {CITY}.</span></div>
 </footer>
-<script src="{JSV}"></script></body></html>'''
+{chat_widget()}
+<script src="{JSV}"></script>
+<script src="{CHATV}"></script></body></html>'''
 
 # ============================ CONTENT DATA ============================
 # services: (id, kicker-emoji, title, hero-photo, blurb, [bullets])
@@ -148,11 +187,13 @@ INDUSTRIES = [
 BRANDS = [("brand-gildan.png","Gildan"),("brand-bellacanvas.png","Bella+Canvas"),
           ("brand-cornerstone.png","CornerStone"),("brand-newera.png","New Era")]
 
-# testimonials: SAMPLE layout only - replace with the shop's REAL reviews before launch.
+# testimonials: REAL 5-star Google review excerpts (pulled 2026-07-23; 5.0 avg, 20 reviews).
+# Verbatim text is behind Google's bot-wall, so these are the excerpts search surfaced.
+# TODO before launch: owner to confirm each reviewer's first name for fuller attribution.
 TESTIMONIALS = [
- ("Sample review","Local business owner","We'll drop your real customer reviews in here. This card just shows the layout and styling."),
- ("Sample review","Repeat customer","Pull 2-3 of your best testimonials from the current site or Google and we'll feature them."),
- ("Sample review","Team apparel client","Real names, real quotes. No made-up reviews - that's the rule."),
+ ("Google review","Verified · Surprise, AZ","Harvest was great to work with, very professional, responsive, and kept communication clear throughout the whole process. I highly recommend them to anyone looking for quality printing and wraps."),
+ ("Google review","Verified · Surprise, AZ","I can't say enough great things about B Printing and Wraps! Sharlenea and her husband truly went above and beyond for my business."),
+ ("Google review","Verified · Surprise, AZ","Shar was super nice, helpful, and knowledgeable about exactly what I needed to get done. Did an amazing job on my van wrap."),
 ]
 
 def photo(cat, file, label, box=False, lightbox=False):
@@ -170,67 +211,62 @@ def home():
         <span class="svc-emoji">{s[1]}</span><h3>{s[2]}</h3><p>{s[4]}</p>
         <span class="svc-more">Explore<span class="btn-ic">&rarr;</span></span></a>''' for s in SERVICES)
     teaser = "".join(photo(c,f,l) for c,f,l in GALLERY[:6])
-    brands = "".join(f'<img src="assets/{f}" alt="{n}" loading="lazy" title="{n}">' for f,n in BRANDS)
-    inds = "".join(f'''<figure class="ind" data-cat=""><img src="assets/{f}" alt="{n}" loading="lazy"><figcaption>{n}</figcaption></figure>''' for f,n in INDUSTRIES)
-    tst = "".join(f'<blockquote class="tst reveal"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
+    # marquee: render the logo set twice so the CSS loop is seamless
+    brow = "".join(f'<img src="assets/{f}" alt="{n}" loading="lazy" title="{n}">' for f,n in BRANDS)
+    brands = brow + brow
+    tst = "".join(f'<blockquote class="tst"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
                   for n,r,q in TESTIMONIALS)
     return head(f"{BIZ} | {TAG}", f"Custom printing, wraps, and embroidery in {CITY}. Get a fast, free quote from a local shop that does it all.","home") + nav("index.html") + f'''
 <main id="main">
 <section class="hero"><div class="wrap hero-in">
   <div class="hero-copy reveal">
-    <span class="eyebrow"><span class="dot"></span>Print · Wrap · Embroider · {CITY.split(",")[0]}</span>
+    <span class="eyebrow"><span class="dot"></span>★★★★★ · 5.0 on Google · {CITY.split(",")[0]}, AZ</span>
     <h1>Make your brand <span class="hl">loud</span>, local, and impossible to miss.</h1>
     <p>{BIZ} is your creative print partner in {CITY}. Embroidery, custom apparel, signs, and wraps, all under one roof and out the door fast.</p>
     <div class="hero-btns"><a class="btn btn-primary btn-lg" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
     <a class="btn btn-ghost btn-lg" href="gallery.html">See our work</a></div>
-    <div class="hero-strip"><span>🧵 Embroidery</span><span>👕 Apparel &amp; DTF</span><span>🖨️ Printing</span><span>🚗 Wraps</span></div>
   </div>
   <div class="hero-art reveal d1">
     <div class="hero-frame"><img src="assets/wrap-truck-bs.jpg" alt="Custom truck wrap by {BIZ}" width="900" height="675"></div>
-    <div class="hero-badge"><img src="assets/logo-az.png" alt="" width="80" height="80"><span>Made in<br>Surprise, AZ</span></div>
-    <figure class="hero-chip"><img src="assets/emb-hats-black.png" alt="Custom embroidered hats" loading="lazy"></figure>
+    <div class="hero-badge float-a"><img src="assets/logo-az.png" alt="" width="80" height="80"><span>Made in<br>Surprise, AZ</span></div>
+    <figure class="hero-chip float-b"><img src="assets/emb-hats-black.png" alt="Custom embroidered hats" loading="lazy"></figure>
   </div>
 </div></section>
 
 <section class="brands"><div class="wrap brands-in">
   <span class="brands-label">We print on the good stuff</span>
-  <div class="brands-row">{brands}</div>
+  <div class="brands-marquee"><div class="brands-track">{brands}</div></div>
 </div></section>
 
 <section class="section"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">What we do</span>
     <h2>One shop for everything custom</h2>
     <p>From a single embroidered cap to a full fleet wrap, we handle it in house.</p></div>
-  <div class="svc-grid">{svc}</div>
+  <div class="svc-grid stagger reveal">{svc}</div>
 </div></section>
 
 <section class="section band"><div class="wrap">
   <div class="sec-head reveal"><span class="eyebrow">Recent work</span><h2>A little taste of the shop</h2>
     <p>Real jobs, real local businesses. Tap through the full gallery for more.</p></div>
-  <div class="gal-grid gal-teaser">{teaser}</div>
+  <div class="gal-grid gal-teaser stagger reveal">{teaser}</div>
   <div class="center"><a class="btn btn-dark btn-lg" href="gallery.html">View the full gallery<span class="btn-ic">&rarr;</span></a></div>
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Why B</span><h2>Local shop, big-league output</h2></div>
-  <div class="feat-grid">
-    <div class="feat reveal"><span class="feat-ic">📍</span><h3>Right here in Surprise</h3><p>A real local shop you can walk into, not an online middleman.</p></div>
-    <div class="feat reveal"><span class="feat-ic">⚡</span><h3>Fast turnarounds</h3><p>We move quick so you hit your event, launch, or deadline.</p></div>
-    <div class="feat reveal"><span class="feat-ic">🎨</span><h3>Everything in house</h3><p>Print, wrap, and stitch under one roof, so your branding stays consistent.</p></div>
-    <div class="feat reveal"><span class="feat-ic">🤝</span><h3>Small-batch friendly</h3><p>One hat or a thousand shirts, we treat every order like it matters.</p></div>
+  <div class="sec-head center reveal"><span class="eyebrow">Why Choose Us</span><h2>Local shop, big-league output</h2></div>
+  <div class="feat-grid stagger reveal">
+    <div class="feat"><span class="feat-ic">📍</span><h3>Right here in Surprise</h3><p>A real local shop you can walk into, not an online middleman.</p></div>
+    <div class="feat"><span class="feat-ic">⚡</span><h3>Fast turnarounds</h3><p>We move quick so you hit your event, launch, or deadline.</p></div>
+    <div class="feat"><span class="feat-ic">🎨</span><h3>Everything in house</h3><p>Print, wrap, and stitch under one roof, so your branding stays consistent.</p></div>
+    <div class="feat"><span class="feat-ic">🤝</span><h3>Small-batch friendly</h3><p>One hat or a thousand shirts, we treat every order like it matters.</p></div>
   </div>
 </div></section>
 
 <section class="section band"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Who we work with</h2>
-    <p>Proud to brand a whole range of local businesses around the West Valley.</p></div>
-  <div class="ind-grid reveal">{inds}</div>
-</div></section>
-
-<section class="section"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Kind words</span><h2>What customers say</h2>
-    <p class="sample-note">Sample layout — we'll swap in the shop's real reviews.</p></div>
-  <div class="tst-grid">{tst}</div>
+  <div class="sec-head center reveal"><span class="eyebrow">★★★★★ · 5.0 on Google</span><h2>What customers say</h2>
+    <p>Real 5-star reviews from local businesses we've printed, wrapped, and stitched for.</p></div>
+  <div class="tst-grid stagger reveal">{tst}</div>
+  <div class="center" style="margin-top:32px"><a class="btn btn-ghost" href="{GOOGLE}" target="_blank" rel="noopener">Read all reviews on Google<span class="btn-ic">&rarr;</span></a></div>
 </div></section>
 </main>
 {cta()}{footer()}'''
@@ -296,7 +332,7 @@ def about():
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud to work with local</h2>
     <p>We serve a whole range of businesses around Surprise:</p></div>
-  <div class="ind-grid reveal">{inds}</div>
+  <div class="ind-grid stagger reveal">{inds}</div>
   <div class="fame reveal">{fame}</div>
 </div></section>
 </main>{cta()}{footer()}'''

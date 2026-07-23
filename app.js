@@ -8,6 +8,16 @@ if (burger) {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') toggle(false); });
 }
 
+// Theme toggle (dark default via FOUC script in <head>; choice persists)
+document.querySelectorAll('.theme-toggle').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch (e) {}
+  });
+});
+
 // Scroll reveals
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
