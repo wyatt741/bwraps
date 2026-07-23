@@ -1,8 +1,8 @@
-// B Printing and Wraps - mobile menu, scroll reveals, gallery filter
+// B Printing and Wraps - mobile menu, scroll reveals, gallery filter, lightbox
 // Mobile menu
 const burger = document.querySelector('.burger');
 if (burger) {
-  const toggle = (open) => document.body.classList.toggle('menu-open', open);
+  const toggle = (open) => { document.body.classList.toggle('menu-open', open); burger.setAttribute('aria-expanded', open); };
   burger.addEventListener('click', () => toggle(!document.body.classList.contains('menu-open')));
   document.querySelectorAll('.mobile-menu a').forEach(a => a.addEventListener('click', () => toggle(false)));
   document.addEventListener('keydown', e => { if (e.key === 'Escape') toggle(false); });
@@ -24,4 +24,19 @@ if (filters.length) {
     const cat = btn.getAttribute('data-cat');
     tiles.forEach(t => t.classList.toggle('hide', cat !== 'all' && t.getAttribute('data-cat') !== cat));
   }));
+}
+
+// Lightbox (gallery)
+const lb = document.getElementById('lightbox');
+if (lb) {
+  const lbImg = lb.querySelector('img');
+  const open = (src, alt) => { lbImg.src = src; lbImg.alt = alt || ''; lb.classList.add('on'); lb.setAttribute('aria-hidden', 'false'); };
+  const close = () => { lb.classList.remove('on'); lb.setAttribute('aria-hidden', 'true'); lbImg.src = ''; };
+  document.querySelectorAll('#gal .tile[data-full]').forEach(t => {
+    const go = () => open(t.getAttribute('data-full'), t.querySelector('img')?.alt);
+    t.addEventListener('click', go);
+    t.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+  lb.addEventListener('click', e => { if (e.target !== lbImg) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
 }

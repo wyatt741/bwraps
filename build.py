@@ -1,25 +1,36 @@
 #!/usr/bin/env python3
 """B Printing and Wraps - static site generator.
-Run:  py build.py    (emits index/services/gallery/about/contact + sitemap/robots)
+Run:  python3 build.py   (emits index/services/gallery/about/contact + sitemap/robots)
 Edit CONTENT here, never hand-edit the generated HTML. Deploy = git push.
-Learned from the anderson-it engine: one generator, cache-busted assets, real
-content only (no fabricated reviews/stats), FormSubmit contact, motion layer.
+Engine from anderson-it: one generator, cache-busted assets, real content only
+(no fabricated reviews/stats), FormSubmit contact, IntersectionObserver motion.
+
+Theme v2 (2026-07): photography-forward, on-brand. Real identity pulled from the
+logo = hot magenta script "B" + black. So the palette is electric pink + ink +
+warm white, NOT the rainbow-CMYK guess from v1. Every tile is a real shop photo
+downloaded from bwraps1.com into assets/.
 """
-import html
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=1"
-JSV  = "app.js?v=1"
+CSSV = "styles.css?v=2"
+JSV  = "app.js?v=2"
 
-# ---- business facts (from bwraps1.com, 2026-07-23) ----
+# ---- business facts (verified from bwraps1.com, 2026-07-23) ----
 BIZ      = "B Printing and Wraps"
-TAG      = "Surprise's creative print, wrap & embroidery shop"
+TAG      = "Surprise's custom print, wrap & embroidery shop"
 CITY     = "Surprise, Arizona"
+ADDR     = "16551 N Dysart Rd #107, Surprise, AZ 85378"
 PHONE    = "928-230-8525"
 PHONE_TEL= "+19282308525"
-EMAIL    = "hello@bwraps1.com"   # PLACEHOLDER - owner to confirm the real inbox for the form
+EMAIL    = "elitecustomprinting@outlook.com"  # real shop inbox from their site. CONFIRM this is the form destination + activate FormSubmit before launch.
+HOURS    = "Mon-Fri 9am-5pm"
 DOMAIN   = "bwraps1.com"
-TIKTOK   = "https://www.tiktok.com/@bwraps1"  # PLACEHOLDER handle - confirm
+MAPS     = "https://maps.google.com/?q=B+Printing+and+Wraps+16551+N+Dysart+Rd+Surprise+AZ"
+MAP_EMBED= "https://www.google.com/maps?q=16551+N+Dysart+Rd+%23107+Surprise+AZ+85378&output=embed"
+# socials (verified)
+TIKTOK   = "https://www.tiktok.com/@luckstitch"
+IG       = "https://www.instagram.com/bprinting_/"
+FB       = "https://www.facebook.com/bprintingandwraps"
 
 NAV = [("index.html","Home"),("services.html","Services"),("gallery.html","Gallery"),
        ("about.html","About"),("contact.html","Contact")]
@@ -29,78 +40,113 @@ def head(title, desc, page=""):
     return f'''<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title><meta name="description" content="{desc}">
+<meta property="og:title" content="{title}"><meta property="og:description" content="{desc}">
+<meta property="og:type" content="website"><meta name="theme-color" content="#e6187e">
+<link rel="icon" href="assets/logo-az.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{CSSV}">
-</head><body class="{page}">'''
+</head><body class="{page}">
+<a class="skip" href="#main">Skip to content</a>'''
+
+def brandmark(cls=""):
+    return f'<a class="brand {cls}" href="index.html" aria-label="{BIZ} home"><img src="assets/logo-primary.png" alt="{BIZ}" width="150" height="150"></a>'
 
 def nav(active):
     links = "".join(
         f'<a href="{h}"{" class=\"active\"" if h==active else ""}>{t}</a>'
         for h,t in NAV)
     mlinks = "".join(f'<a href="{h}">{t}</a>' for h,t in NAV)
-    return f'''<header class="nav"><div class="wrap nav-in">
-  <a class="brand" href="index.html"><span class="brand-b">B</span><span class="brand-t">Printing&nbsp;&amp;&nbsp;Wraps</span></a>
-  <nav class="nav-links">{links}<a class="btn btn-primary" href="contact.html">Get a quote</a></nav>
-  <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button>
-</div>
-<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary" href="contact.html">Get a quote</a></div>
-</header>'''
+    return f'''<div class="nav-shell"><header class="nav"><div class="nav-in">
+  {brandmark()}
+  <nav class="nav-links">{links}</nav>
+  <a class="btn btn-primary btn-sm nav-cta" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>
+  <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</div></header></div>
+<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a></div>'''
 
 def cta():
-    return f'''<section class="cta-band"><div class="wrap cta-in">
-  <h2>Got a project? Let's make it loud.</h2>
-  <p>Tell us what you need printed, wrapped, or stitched. We'll get you a quote fast.</p>
-  <div class="cta-btns"><a class="btn btn-primary btn-lg" href="contact.html">Get a free quote</a>
-  <a class="btn btn-ghost btn-lg" href="tel:{PHONE_TEL}">Call {PHONE}</a></div>
-</div></section>'''
+    return f'''<section class="cta-band"><div class="wrap"><div class="cta-card reveal">
+  <div class="cta-copy">
+    <span class="eyebrow eyebrow-light">Let's build it</span>
+    <h2>Got a project? Let's make it loud.</h2>
+    <p>Tell us what you need printed, wrapped, or stitched. We'll get you a fast, free quote.</p>
+  </div>
+  <div class="cta-btns"><a class="btn btn-glow btn-lg" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
+  <a class="btn btn-ghost-light btn-lg" href="tel:{PHONE_TEL}">Call {PHONE}</a></div>
+</div></div></section>'''
 
 def footer():
     cols = "".join(f'<a href="{h}">{t}</a>' for h,t in NAV)
     return f'''<footer><div class="wrap foot-grid">
   <div class="foot-brand">
-    <a class="brand" href="index.html"><span class="brand-b">B</span><span class="brand-t">Printing&nbsp;&amp;&nbsp;Wraps</span></a>
+    {brandmark("brand-foot")}
     <p>Custom printing, wraps, and embroidery in {CITY}. Local, fast, and a little bit loud.</p>
+    <div class="foot-social">
+      <a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
+      <a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">Facebook</a>
+      <a href="{TIKTOK}" target="_blank" rel="noopener" aria-label="TikTok">TikTok</a>
+    </div>
   </div>
   <div class="foot-col"><h5>Explore</h5>{cols}</div>
-  <div class="foot-col"><h5>Contact</h5>
+  <div class="foot-col"><h5>Visit</h5>
+    <a href="{MAPS}" target="_blank" rel="noopener">{ADDR}</a>
     <a href="tel:{PHONE_TEL}">{PHONE}</a>
     <a href="mailto:{EMAIL}">{EMAIL}</a>
-    <a href="{TIKTOK}" target="_blank" rel="noopener">TikTok</a>
-    <span class="foot-note">Surprise, Arizona</span>
+    <span class="foot-note">{HOURS} &middot; Sat-Sun closed</span>
   </div>
 </div>
-<div class="legal wrap"><span>&copy; 2026 {BIZ}. All rights reserved.</span></div>
+<div class="legal wrap"><span>&copy; 2026 {BIZ}. All rights reserved.</span><span>Proudly local to {CITY}.</span></div>
 </footer>
 <script src="{JSV}"></script></body></html>'''
 
 # ============================ CONTENT DATA ============================
-# services: (id, kicker-emoji, title, blurb, [bullets])
+# services: (id, kicker-emoji, title, hero-photo, blurb, [bullets])
 SERVICES = [
- ("embroidery","🧵","Embroidery",
+ ("embroidery","🧵","Embroidery","emb-hats-black.png",
   "Hats, apparel, monogram towels & robes. As they say around here, the stitchin' is bitchin'.",
   ["Custom hats & beanies","Company polos & workwear","Monogram towels & robes","Sports team & spirit wear"]),
- ("apparel","👕","Custom Apparel & DTF",
+ ("apparel","👕","Custom Apparel & DTF","apparel-custom.png",
   "Screen print, direct-to-film, and heat press. Turn your crew into walking billboards.",
   ["Screen printing","Direct-to-film (DTF) transfers","Wholesale gang sheets","Heat-press & one-offs"]),
- ("printing","🖨️","Printing & Signs",
+ ("printing","🖨️","Printing & Signs","signs-banners.png",
   "Banners, signage, stickers, business collateral. If it can be printed, we print it.",
   ["Banners & yard signs","Stickers & decals","Business cards & flyers","Posters & large format"]),
- ("wraps","🚗","Vehicle & Wall Wraps",
-  "Vehicles, walls, and vending machines turned into rolling (and standing) billboards.",
-  ["Full & partial vehicle wraps","Wall & window graphics","Vending machine wraps","Fleet branding"]),
+ ("wraps","🚗","Vehicle & Wall Wraps","wrap-truck-bs.jpg",
+  "Vehicles, trailers, walls, and vending machines turned into rolling billboards.",
+  ["Full & partial vehicle wraps","Trailer & fleet branding","Wall & window graphics","Vending machine wraps"]),
 ]
 
-# gallery placeholder tiles: (category, label). Real photos swap in later.
+# gallery: (category, image-file, label) - all REAL shop photos in assets/
 GALLERY = [
- ("embroidery","Embroidered caps"),("wraps","Box truck wrap"),("apparel","DTF tees"),
- ("printing","Event banner"),("embroidery","Monogram robes"),("apparel","Screen-print run"),
- ("wraps","Wall mural wrap"),("printing","Die-cut stickers"),("wraps","Vending wrap"),
- ("apparel","Team hoodies"),("printing","Yard signs"),("embroidery","Company polos"),
+ ("wraps","wrap-truck-bs.jpg","Truck wrap · BS Removal"),
+ ("embroidery","emb-hats-shirts.jpg","Embroidered hats & shirts"),
+ ("wraps","wrap-trailer-101.jpg","Trailer wrap · 101 Seamless Gutters"),
+ ("apparel","apparel-custom.png","Custom apparel"),
+ ("embroidery","emb-hats-black.png","Custom embroidered hats"),
+ ("wraps","wrap-wall.jpg","Interior wall wrap"),
+ ("printing","signs-banners.png","Custom banners & signs"),
+ ("embroidery","emb-towels-dark.png","Embossed robes & towels"),
+ ("wraps","wrap-vending.png","Vending machine wrap"),
+ ("apparel","apparel-dtf.png","DTF transfers"),
+ ("embroidery","emb-towels-black.png","Monogram towels"),
+ ("wraps","wrap-window-perf.jpg","Vehicle window perf"),
+ ("embroidery","emb-hat-shirt.png","Hat & shirt combo"),
+ ("embroidery","emb-hats-shirts-2.jpg","Custom embroidered set"),
 ]
 GCATS = [("all","Everything"),("embroidery","Embroidery"),("apparel","Apparel & DTF"),
          ("printing","Printing"),("wraps","Wraps")]
+
+# industries served (Wall of Fame) with real illustrative tiles
+INDUSTRIES = [
+ ("case-foodtruck.png","Food trucks"),("case-realestate.png","Real estate"),
+ ("case-gym.png","Gyms & fitness"),("case-school.png","Schools & teams"),
+]
+
+# apparel brands they print on (logos in assets/)
+BRANDS = [("brand-gildan.png","Gildan"),("brand-bellacanvas.png","Bella+Canvas"),
+          ("brand-cornerstone.png","CornerStone"),("brand-newera.png","New Era")]
 
 # testimonials: SAMPLE layout only - replace with the shop's REAL reviews before launch.
 TESTIMONIALS = [
@@ -109,29 +155,46 @@ TESTIMONIALS = [
  ("Sample review","Team apparel client","Real names, real quotes. No made-up reviews - that's the rule."),
 ]
 
-def tile(cat, label, big=False):
-    return f'<figure class="tile tile-{cat}{" tile-big" if big else ""}" data-cat="{cat}"><span class="tile-label">{label}</span><span class="tile-swap">photo</span></figure>'
+def photo(cat, file, label, box=False, lightbox=False):
+    extra = ' data-full="assets/'+file+'"' if lightbox else ""
+    role = ' role="button" tabindex="0"' if lightbox else ""
+    fig = f'''<figure class="tile{" tile-box" if box else ""}" data-cat="{cat}"{extra}{role}>
+      <img src="assets/{file}" alt="{label}" loading="lazy">
+      <figcaption>{label}</figcaption></figure>'''
+    return fig
 
 # ============================ PAGES ============================
 def home():
     svc = "".join(
-        f'''<a class="svc svc-{s[0]}" href="services.html#{s[0]}">
-        <span class="svc-emoji">{s[1]}</span><h3>{s[2]}</h3><p>{s[3]}</p>
-        <span class="svc-more">See more &rarr;</span></a>''' for s in SERVICES)
-    teaser = "".join(tile(c,l) for c,l in GALLERY[:6])
-    tst = "".join(f'<blockquote class="tst reveal"><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
+        f'''<a class="svc" href="services.html#{s[0]}">
+        <span class="svc-emoji">{s[1]}</span><h3>{s[2]}</h3><p>{s[4]}</p>
+        <span class="svc-more">Explore<span class="btn-ic">&rarr;</span></span></a>''' for s in SERVICES)
+    teaser = "".join(photo(c,f,l) for c,f,l in GALLERY[:6])
+    brands = "".join(f'<img src="assets/{f}" alt="{n}" loading="lazy" title="{n}">' for f,n in BRANDS)
+    inds = "".join(f'''<figure class="ind" data-cat=""><img src="assets/{f}" alt="{n}" loading="lazy"><figcaption>{n}</figcaption></figure>''' for f,n in INDUSTRIES)
+    tst = "".join(f'<blockquote class="tst reveal"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
                   for n,r,q in TESTIMONIALS)
     return head(f"{BIZ} | {TAG}", f"Custom printing, wraps, and embroidery in {CITY}. Get a fast, free quote from a local shop that does it all.","home") + nav("index.html") + f'''
+<main id="main">
 <section class="hero"><div class="wrap hero-in">
   <div class="hero-copy reveal">
-    <span class="eyebrow">Print &middot; Wrap &middot; Embroider</span>
-    <h1>Make your brand <span class="hl hl-1">loud</span>,<br><span class="hl hl-2">local</span>, and impossible to miss.</h1>
+    <span class="eyebrow"><span class="dot"></span>Print · Wrap · Embroider · {CITY.split(",")[0]}</span>
+    <h1>Make your brand <span class="hl">loud</span>, local, and impossible to miss.</h1>
     <p>{BIZ} is your creative print partner in {CITY}. Embroidery, custom apparel, signs, and wraps, all under one roof and out the door fast.</p>
-    <div class="hero-btns"><a class="btn btn-primary btn-lg" href="contact.html">Get a free quote</a>
+    <div class="hero-btns"><a class="btn btn-primary btn-lg" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
     <a class="btn btn-ghost btn-lg" href="gallery.html">See our work</a></div>
     <div class="hero-strip"><span>🧵 Embroidery</span><span>👕 Apparel &amp; DTF</span><span>🖨️ Printing</span><span>🚗 Wraps</span></div>
   </div>
-  <div class="hero-art reveal d1">{tile("embroidery","Your work here",True)}</div>
+  <div class="hero-art reveal d1">
+    <div class="hero-frame"><img src="assets/wrap-truck-bs.jpg" alt="Custom truck wrap by {BIZ}" width="900" height="675"></div>
+    <div class="hero-badge"><img src="assets/logo-az.png" alt="" width="80" height="80"><span>Made in<br>Surprise, AZ</span></div>
+    <figure class="hero-chip"><img src="assets/emb-hats-black.png" alt="Custom embroidered hats" loading="lazy"></figure>
+  </div>
+</div></section>
+
+<section class="brands"><div class="wrap brands-in">
+  <span class="brands-label">We print on the good stuff</span>
+  <div class="brands-row">{brands}</div>
 </div></section>
 
 <section class="section"><div class="wrap">
@@ -142,9 +205,10 @@ def home():
 </div></section>
 
 <section class="section band"><div class="wrap">
-  <div class="sec-head reveal"><span class="eyebrow">Recent work</span><h2>A little taste of the shop</h2></div>
+  <div class="sec-head reveal"><span class="eyebrow">Recent work</span><h2>A little taste of the shop</h2>
+    <p>Real jobs, real local businesses. Tap through the full gallery for more.</p></div>
   <div class="gal-grid gal-teaser">{teaser}</div>
-  <div class="center"><a class="btn btn-dark btn-lg" href="gallery.html">View the full gallery &rarr;</a></div>
+  <div class="center"><a class="btn btn-dark btn-lg" href="gallery.html">View the full gallery<span class="btn-ic">&rarr;</span></a></div>
 </div></section>
 
 <section class="section"><div class="wrap">
@@ -158,49 +222,61 @@ def home():
 </div></section>
 
 <section class="section band"><div class="wrap">
+  <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Who we work with</h2>
+    <p>Proud to brand a whole range of local businesses around the West Valley.</p></div>
+  <div class="ind-grid reveal">{inds}</div>
+</div></section>
+
+<section class="section"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Kind words</span><h2>What customers say</h2>
-    <p class="sample-note">Sample layout - we'll swap in your real reviews.</p></div>
+    <p class="sample-note">Sample layout — we'll swap in the shop's real reviews.</p></div>
   <div class="tst-grid">{tst}</div>
 </div></section>
+</main>
 {cta()}{footer()}'''
 
 def services():
     secs = ""
-    for i,(sid,emo,title,blurb,bullets) in enumerate(SERVICES):
+    for i,(sid,emo,title,hero,blurb,bullets) in enumerate(SERVICES):
         bl = "".join(f"<li>{b}</li>" for b in bullets)
-        art = tile(sid, title)
         flip = " svc-row-flip" if i%2 else ""
         secs += f'''<section class="section svc-row{flip}" id="{sid}"><div class="wrap svc-row-in">
-        <div class="svc-row-art reveal">{art}</div>
+        <div class="svc-row-art reveal"><div class="art-frame">{photo(sid,hero,title)}</div></div>
         <div class="svc-row-copy reveal"><span class="svc-emoji">{emo}</span><h2>{title}</h2>
         <p>{blurb}</p><ul class="ticks">{bl}</ul>
-        <a class="btn btn-primary" href="contact.html">Quote this &rarr;</a></div>
+        <a class="btn btn-primary" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
       </div></section>'''
     return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services") + nav("services.html") + f'''
+<main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Services</span><h1>Everything we make</h1>
   <p>Four lines, one shop. Mix and match to brand your whole business.</p>
 </div></section>
-{secs}{cta()}{footer()}'''
+{secs}</main>{cta()}{footer()}'''
 
 def gallery():
     filt = "".join(f'<button class="gfilter{" active" if c=="all" else ""}" data-cat="{c}">{t}</button>' for c,t in GCATS)
-    tiles = "".join(tile(c,l) for c,l in GALLERY)
+    tiles = "".join(photo(c,f,l,lightbox=True) for c,f,l in GALLERY)
     return head(f"Gallery | {BIZ}", f"See real embroidery, apparel, printing, and wrap work from {BIZ} in {CITY}.","gallery") + nav("gallery.html") + f'''
+<main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Gallery</span><h1>See the work</h1>
-  <p>A sample of what leaves the shop. Real photos drop in here.</p>
+  <p>Real jobs that left the shop. Tap any photo to view it bigger.</p>
 </div></section>
 <section class="section"><div class="wrap">
   <div class="gfilters reveal">{filt}</div>
-  <div class="gal-grid" id="gal">{tiles}</div>
+  <div class="gal-grid gal-masonry" id="gal">{tiles}</div>
 </div></section>
+</main>
+<div class="lightbox" id="lightbox" aria-hidden="true"><button class="lb-close" aria-label="Close">&times;</button><img src="" alt=""></div>
 {cta()}{footer()}'''
 
 def about():
+    inds = "".join(f'''<figure class="ind"><img src="assets/{f}" alt="{n}" loading="lazy"><figcaption>{n}</figcaption></figure>''' for f,n in INDUSTRIES)
     fame = "".join(f'<span class="fame-chip">{n}</span>' for n in
         ["Restaurants","Cafes","Gyms & wellness","Auto shops","Real estate","Food trucks","Schools","Non-profits"])
     return head(f"About | {BIZ}", f"{BIZ} is a local print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about") + nav("about.html") + f'''
+<main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">About</span><h1>Your neighbors with a print shop</h1>
 </div></section>
@@ -209,18 +285,25 @@ def about():
     <p class="lead">{BIZ} started with a simple idea: give {CITY} a creative shop that can print it, wrap it, and stitch it, without sending you to three different vendors.</p>
     <p>We're a local team that treats a one-off gift with the same care as a full fleet wrap. Whether you're a food truck needing a fresh look, a gym motivating members with a wall wrap, or a team that wants spirit wear with actual spirit, we've got you.</p>
     <p>Everything happens in house, so your branding stays consistent and your timeline stays short.</p>
+    <div class="about-facts">
+      <div><strong>{ADDR.split(",")[0]}</strong><span>Dysart Rd, Surprise</span></div>
+      <div><strong>{HOURS}</strong><span>Sat-Sun closed</span></div>
+      <div><strong>In house</strong><span>Print · wrap · stitch</span></div>
+    </div>
   </div>
-  <div class="about-art reveal d1">{tile("wraps","The shop")}</div>
+  <div class="about-art reveal d1"><div class="art-frame">{photo("wraps","emb-thread.png","In the shop")}</div></div>
 </div></section>
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud to work with local</h2>
     <p>We serve a whole range of businesses around Surprise:</p></div>
+  <div class="ind-grid reveal">{inds}</div>
   <div class="fame reveal">{fame}</div>
 </div></section>
-{cta()}{footer()}'''
+</main>{cta()}{footer()}'''
 
 def contact():
     return head(f"Contact | {BIZ}", f"Get a free quote from {BIZ} in {CITY}. Call {PHONE} or send us your project.","contact") + nav("contact.html") + f'''
+<main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Contact</span><h1>Let's get you a quote</h1>
   <p>Tell us what you need. Attach your art or logo if you've got it, and we'll take it from there.</p>
@@ -229,6 +312,7 @@ def contact():
   <form class="cform reveal" action="https://formsubmit.co/{EMAIL}" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="_subject" value="New quote request from the website">
     <input type="hidden" name="_template" value="table">
+    <input type="text" name="_honey" style="display:none">
     <div class="f-row"><label>Name<input name="name" required></label>
     <label>Phone<input name="phone" type="tel"></label></div>
     <label>Email<input name="email" type="email" required></label>
@@ -238,17 +322,19 @@ def contact():
       <option>Printing / signs</option><option>Vehicle or wall wrap</option><option>Not sure yet</option></select></label>
     <label>Your art or logo (optional)<input name="attachment" type="file"></label>
     <label>Project details<textarea name="message" rows="5" placeholder="Sizes, quantities, colors, deadline..."></textarea></label>
-    <button class="btn btn-primary btn-lg" type="submit">Send it &rarr;</button>
+    <button class="btn btn-primary btn-lg" type="submit">Send it<span class="btn-ic">&rarr;</span></button>
     <p class="form-fine">Prefer to talk? Call or text {PHONE}.</p>
   </form>
   <aside class="contact-side reveal d1">
     <div class="cside-card"><h3>Call or text</h3><a class="big-phone" href="tel:{PHONE_TEL}">{PHONE}</a></div>
     <div class="cside-card"><h3>Email</h3><a href="mailto:{EMAIL}">{EMAIL}</a></div>
-    <div class="cside-card"><h3>Where</h3><p>{CITY}<br>Serving the West Valley</p></div>
-    <div class="cside-card"><h3>Follow</h3><a href="{TIKTOK}" target="_blank" rel="noopener">TikTok &rarr;</a></div>
+    <div class="cside-card"><h3>Visit the shop</h3><p>{ADDR}</p><a href="{MAPS}" target="_blank" rel="noopener">Get directions &rarr;</a></div>
+    <div class="cside-card"><h3>Hours</h3><p>{HOURS}<br>Saturday &amp; Sunday closed</p></div>
+    <div class="cside-card"><h3>Follow</h3><div class="cside-social"><a href="{IG}" target="_blank" rel="noopener">Instagram</a><a href="{FB}" target="_blank" rel="noopener">Facebook</a><a href="{TIKTOK}" target="_blank" rel="noopener">TikTok</a></div></div>
   </aside>
 </div></section>
-{footer()}'''
+<section class="map-sec"><iframe src="{MAP_EMBED}" title="{BIZ} location map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe></section>
+</main>{footer()}'''
 
 # ============================ BUILD ============================
 PAGES = {"index.html":home,"services.html":services,"gallery.html":gallery,
