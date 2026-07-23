@@ -391,7 +391,10 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .hero-art{max-width:100%}
   .hero-frame{transform:none}                   /* no rotation -> no right-edge overflow */
   .hero-badge,.hero-chip{display:none}          /* floating accents poke off-screen on phones */
-  .brands-in{flex-direction:column;align-items:flex-start;gap:14px}
+  /* column flex: flex:1 governs height, so the marquee must be pinned to 100%
+     width or it expands to its max-content track and overflows the page */
+  .brands-in{flex-direction:column;align-items:stretch;gap:14px}
+  .brands-marquee{width:100%;min-width:0}
   .svc-grid,.feat-grid,.gal-grid,.usecase-grid,.stats{grid-template-columns:1fr 1fr;gap:12px}
   .gal-masonry .tile:nth-child(7n+1){grid-row:span 1}
   .gal-masonry .tile:nth-child(7n+1) img{aspect-ratio:4/3}
