@@ -63,11 +63,10 @@ TIKTOK   = "https://www.tiktok.com/@luckstitch"
 IG       = "https://www.instagram.com/bprinting_/"
 FB       = "https://www.facebook.com/bprintingandwraps"
 
-# "Contact" lives in the "Get a quote" button (both point to contact.html) - no duplicate nav item.
+# "Contact" is a header nav link; the animated "Get a quote" button (also -> contact.html) is the primary CTA.
 NAV = [("index.html","Home"),("services.html","Services"),("gallery.html","Gallery"),
-       ("about.html","About")]
-# footer keeps a direct Contact link so the page is still reachable from the bottom
-FOOT_NAV = NAV + [("contact.html","Contact")]
+       ("about.html","About"),("contact.html","Contact")]
+FOOT_NAV = NAV
 
 # ============================ SHARED CHROME ============================
 def head(title, desc, page=""):
@@ -100,7 +99,7 @@ def nav(active):
   <a class="btn btn-primary btn-sm nav-cta cta-anim" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>
   <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div></header></div>
-<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary cta-anim" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>{TOGGLE}</div>'''
+<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary cta-anim" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a></div>'''
 
 def cta():
     return f'''<section class="cta-band"><div class="wrap"><div class="cta-card reveal">
