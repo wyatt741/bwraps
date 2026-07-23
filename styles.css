@@ -78,9 +78,10 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 
 /* ---- shared bits ---- */
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--disp);font-weight:700;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
-  color:var(--pink-deep);background:var(--band);padding:7px 15px;border-radius:100px;margin-bottom:18px}
+  color:var(--pink-deep);background:var(--band);border:1px solid rgba(230,24,126,.3);padding:7px 15px;border-radius:100px;margin-bottom:18px}
 .eyebrow .dot{width:7px;height:7px;border-radius:100px;background:var(--pink);box-shadow:0 0 0 4px rgba(230,24,126,.18)}
-.eyebrow-light{color:#fff;background:rgba(255,255,255,.15)}
+.eyebrow-light{color:#fff;background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25)}
+[data-theme="dark"] .eyebrow{color:var(--pink-soft);background:rgba(230,24,126,.14);border-color:rgba(255,90,168,.35)}
 .section{padding:100px 0}
 .band{background:var(--paper2);border-block:1px solid var(--line)}
 .sec-head{margin-bottom:44px}
