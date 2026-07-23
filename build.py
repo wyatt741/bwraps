@@ -300,7 +300,7 @@ def home():
 <main id="main">
 <section class="hero"><div class="wrap hero-in">
   <div class="hero-copy reveal">
-    <span class="eyebrow"><span class="dot"></span>★★★★★ · 5.0 on Google · {CITY.split(",")[0]}, AZ</span>
+    <span class="eyebrow">★★★★★ · 5.0 on Google · {CITY.split(",")[0]}, AZ</span>
     <h1>Make your brand <span class="hl">loud</span>, local, and impossible to miss.</h1>
     <p>{BIZ} is your creative print partner in {CITY}. Embroidery, custom apparel, signs, and wraps, all under one roof and out the door fast.</p>
     <div class="hero-btns"><a class="btn btn-primary btn-lg cta-anim" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
