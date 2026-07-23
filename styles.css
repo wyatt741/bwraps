@@ -232,6 +232,10 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .ticks li{padding-left:30px;position:relative;font-weight:500}
 .ticks li::before{content:"";position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:100px;background:var(--band);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e6187e' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");background-size:13px;background-repeat:no-repeat;background-position:center}
+/* "Ideal for" audience chips on service rows */
+.ideal{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.ideal-label{font-family:var(--disp);font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
+.ideal-chip{font-family:var(--body);font-weight:600;font-size:.82rem;padding:5px 13px;border-radius:100px;background:var(--band);color:var(--pink-deep);border:1px solid var(--line-2)}
 
 /* ---- about ---- */
 .about-in{display:grid;grid-template-columns:1.08fr .92fr;gap:52px;align-items:center}

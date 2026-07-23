@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=8"
+CSSV = "styles.css?v=9"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 
@@ -164,20 +164,36 @@ def footer():
 <script src="{CHATV}"></script></body></html>'''
 
 # ============================ CONTENT DATA ============================
-# services: (id, kicker-emoji, title, hero-photo, blurb, [bullets])
+# services. "short" = home cards; "long" = services-page rows (real copy from
+# bwraps1.com woven with real review sentiment); "ideal" = who it's for (their site).
 SERVICES = [
- ("embroidery","🧵","Embroidery","emb-hats-black.png",
-  "Hats, apparel, monogram towels & robes. As they say around here, the stitchin' is bitchin'.",
-  ["Custom hats & beanies","Company polos & workwear","Monogram towels & robes","Sports team & spirit wear"]),
- ("apparel","👕","Custom Apparel & DTF","apparel-custom.png",
-  "Screen print, direct-to-film, and heat press. Turn your crew into walking billboards.",
-  ["Screen printing","Direct-to-film (DTF) transfers","Wholesale gang sheets","Heat-press & one-offs"]),
- ("printing","🖨️","Printing & Signs","signs-banners.png",
-  "Banners, signage, stickers, business collateral. If it can be printed, we print it.",
-  ["Banners & yard signs","Stickers & decals","Business cards & flyers","Posters & large format"]),
- ("wraps","🚗","Vehicle & Wall Wraps","wrap-truck-bs.jpg",
-  "Vehicles, trailers, walls, and vending machines turned into rolling billboards.",
-  ["Full & partial vehicle wraps","Trailer & fleet branding","Wall & window graphics","Vending machine wraps"]),
+ {"id":"embroidery","title":"Embroidery","hero":"emb-hats-black.png",
+  "short":"Hats, apparel, monogram towels & robes. The stitchin' is bitchin'.",
+  "long":"Our featured service, and where the stitchin' is bitchin'. From corporate apparel and sports teams to promotional giveaways and personal gifts, embroidery adds a touch of sophistication to your brand. Customers tell us it comes back sharp, clean, and consistent, every hat matching the last.",
+  "bullets":["Custom hats & beanies","Company polos & workwear","Monogram towels & robes","Sports team & spirit wear"],
+  "ideal":["Corporate apparel","Sports teams","Promo & giveaways","Monogram gifts"]},
+ {"id":"apparel","title":"Custom Apparel & DTF","hero":"apparel-custom.png",
+  "short":"Screen print, DTF, and heat press. Turn your crew into walking billboards.",
+  "long":"Whether we screen print, use direct-to-film, or heat press your garments, custom gear puts your brand on the frontline and turns your team into walking, talking billboards. DTF delivers vibrant, durable designs that stand out, and wholesale gang sheets keep bigger runs cost-effective.",
+  "bullets":["Screen printing","Direct-to-film (DTF) transfers","Wholesale gang sheets","Heat-press & one-offs"],
+  "ideal":["Boutiques","Souvenir shops","Online retailers","Promo suppliers"]},
+ {"id":"printing","title":"Printing & Signs","hero":"signs-banners.png",
+  "short":"Banners, signage, stickers, collateral. If it can be printed, we print it.",
+  "long":"Banners, signage, stickers, and business collateral. If it can be printed, we print it, from everyday marketing pieces to large-format graphics that make your brand impossible to miss.",
+  "bullets":["Banners & yard signs","Stickers & decals","Business cards & flyers","Posters & large format"],
+  "ideal":["Events","Storefronts","Trade shows","Small business"]},
+ {"id":"wraps","title":"Vehicle & Wall Wraps","hero":"wrap-truck-bs.jpg",
+  "short":"Vehicles, trailers, walls, and vending machines turned into rolling billboards.",
+  "long":"We're not just in the business of sticking vinyl on surfaces, we bring your brand to life. Spruce up a retail space, make your trailer the talk of the town, or turn vending machines into mini billboards, all in high-end vinyl built to last.",
+  "bullets":["Full & partial vehicle wraps","Trailer & fleet branding","Wall & window graphics","Vending machine wraps"],
+  "ideal":["Vehicles & fleets","Trailers","Retail & walls","Vending machines"]},
+]
+
+# quality-focused REAL Google review excerpts for the gallery "results" band (distinct from home's).
+GALLERY_REVIEWS = [
+ ("Google review","Verified · Surprise, AZ","The embroidery was sharp, clean, and professional-looking, with excellent attention to detail. Every hat came out consistent in quality."),
+ ("Google review","Verified · Surprise, AZ","Top-notch quality on our stickers, shirts, and hats, using high-end vinyl that lasts. Very fast and affordable too."),
+ ("Google review","Verified · Surprise, AZ","Needed a rush order of shirts and they were done in a day. Couldn't be happier with how they turned out."),
 ]
 
 # gallery: (category, image-file, label) - all REAL shop photos in assets/
@@ -241,8 +257,8 @@ def photo(cat, file, label, box=False, lightbox=False):
 # ============================ PAGES ============================
 def home():
     svc = "".join(
-        f'''<a class="svc" href="services.html#{s[0]}">
-        <span class="ic-badge">{icon(s[0])}</span><h3>{s[2]}</h3><p>{s[4]}</p>
+        f'''<a class="svc" href="services.html#{s["id"]}">
+        <span class="ic-badge">{icon(s["id"])}</span><h3>{s["title"]}</h3><p>{s["short"]}</p>
         <span class="svc-more">Explore<span class="btn-ic">&rarr;</span></span></a>''' for s in SERVICES)
     teaser = "".join(photo(c,f,l) for c,f,l in GALLERY[:6])
     # marquee: render the brand set twice so the CSS loop is seamless
@@ -304,35 +320,51 @@ def home():
 
 def services():
     secs = ""
-    for i,(sid,emo,title,hero,blurb,bullets) in enumerate(SERVICES):
-        bl = "".join(f"<li>{b}</li>" for b in bullets)
+    for i,s in enumerate(SERVICES):
+        bl = "".join(f"<li>{b}</li>" for b in s["bullets"])
+        chips = "".join(f'<span class="ideal-chip">{x}</span>' for x in s["ideal"])
         flip = " svc-row-flip" if i%2 else ""
-        secs += f'''<section class="section svc-row{flip}" id="{sid}"><div class="wrap svc-row-in">
-        <div class="svc-row-art reveal"><div class="art-frame">{photo(sid,hero,title)}</div></div>
-        <div class="svc-row-copy reveal"><span class="ic-badge ic-badge-lg">{icon(sid)}</span><h2>{title}</h2>
-        <p>{blurb}</p><ul class="ticks">{bl}</ul>
+        secs += f'''<section class="section svc-row{flip}" id="{s["id"]}"><div class="wrap svc-row-in">
+        <div class="svc-row-art reveal"><div class="art-frame">{photo(s["id"],s["hero"],s["title"])}</div></div>
+        <div class="svc-row-copy reveal"><span class="ic-badge ic-badge-lg">{icon(s["id"])}</span><h2>{s["title"]}</h2>
+        <p>{s["long"]}</p><ul class="ticks">{bl}</ul>
+        <div class="ideal"><span class="ideal-label">Ideal for</span>{chips}</div>
         <a class="btn btn-primary cta-anim" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
       </div></section>'''
     return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services") + nav("services.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Services</span><h1>Everything we make</h1>
-  <p>Four lines, one shop. Mix and match to brand your whole business.</p>
+  <p>Four lines, one shop, all under one roof in {CITY.split(",")[0]}. Embroidery, custom apparel and DTF, printing and signs, and vehicle wraps. Mix and match to brand your whole business, and get it out the door fast.</p>
 </div></section>
-{secs}</main>{cta()}{footer()}'''
+{secs}
+<section class="section band"><div class="wrap">
+  <div class="sec-head center reveal"><span class="eyebrow">Not sure what you need?</span><h2>Tell us the goal, we'll figure out the how</h2>
+    <p>New logo on 50 shirts, a truck that turns heads, a banner for Saturday. Describe it and we'll point you to the right service and a fast quote.</p></div>
+  <div class="center reveal"><a class="btn btn-primary btn-lg cta-anim" href="contact.html">Start a free quote<span class="btn-ic">&rarr;</span></a></div>
+</div></section>
+</main>{cta()}{footer()}'''
 
 def gallery():
     filt = "".join(f'<button class="gfilter{" active" if c=="all" else ""}" data-cat="{c}">{t}</button>' for c,t in GCATS)
     tiles = "".join(photo(c,f,l,lightbox=True) for c,f,l in GALLERY)
+    greviews = "".join(f'<blockquote class="tst"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
+                       for n,r,q in GALLERY_REVIEWS)
     return head(f"Gallery | {BIZ}", f"See real embroidery, apparel, printing, and wrap work from {BIZ} in {CITY}.","gallery") + nav("gallery.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Gallery</span><h1>See the work</h1>
-  <p>Real jobs that left the shop. Tap any photo to view it bigger.</p>
+  <p>Real jobs for real local businesses, truck and trailer wraps, embroidered hats and apparel, DTF, banners and signage. Every photo here left our shop in {CITY.split(",")[0]}. Tap any one to view it bigger.</p>
 </div></section>
 <section class="section"><div class="wrap">
   <div class="gfilters reveal">{filt}</div>
   <div class="gal-grid gal-masonry" id="gal">{tiles}</div>
+</div></section>
+<section class="section band"><div class="wrap">
+  <div class="sec-head center reveal"><span class="eyebrow">★★★★★ · 5.0 on Google</span><h2>Work that holds up</h2>
+    <p>It's not just how it looks leaving the shop, it's how it holds up after. Here's what customers say about the quality.</p></div>
+  <div class="tst-grid stagger reveal">{greviews}</div>
+  <div class="center" style="margin-top:32px"><a class="btn btn-ghost" href="{GOOGLE}" target="_blank" rel="noopener">Read all reviews on Google<span class="btn-ic">&rarr;</span></a></div>
 </div></section>
 </main>
 <div class="lightbox" id="lightbox" aria-hidden="true"><button class="lb-close" aria-label="Close">&times;</button><img src="" alt=""></div>
