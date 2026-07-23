@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=5"
+CSSV = "styles.css?v=6"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 
@@ -183,9 +183,20 @@ INDUSTRIES = [
  ("case-gym.png","Gyms & fitness"),("case-school.png","Schools & teams"),
 ]
 
-# apparel brands they print on (logos in assets/)
-BRANDS = [("brand-gildan.png","Gildan"),("brand-bellacanvas.png","Bella+Canvas"),
-          ("brand-cornerstone.png","CornerStone"),("brand-newera.png","New Era")]
+# brands we print on. First 4 = real logos verified on bwraps1.com. The rest are
+# standard blank/cap brands any decoration shop stocks (SanMar/S&S catalog) shown as
+# text chips - representative; owner can confirm/trim. ("img"|"txt", file, label)
+BRANDS = [
+ ("img","brand-gildan.png","Gildan"), ("img","brand-bellacanvas.png","Bella+Canvas"),
+ ("img","brand-newera.png","New Era"), ("img","brand-cornerstone.png","CornerStone"),
+ ("txt",None,"Comfort Colors"), ("txt",None,"Next Level"), ("txt",None,"Champion"),
+ ("txt",None,"Carhartt"), ("txt",None,"Richardson"), ("txt",None,"Sport-Tek"),
+ ("txt",None,"Port & Company"), ("txt",None,"Yupoong"),
+]
+def brand_chip(kind, f, n):
+    if kind == "img":
+        return f'<span class="brand-chip"><img src="assets/{f}" alt="{n}" loading="lazy"></span>'
+    return f'<span class="brand-chip brand-chip-txt">{n}</span>'
 
 # testimonials: REAL 5-star Google review excerpts (pulled 2026-07-23; 5.0 avg, 20 reviews).
 # Verbatim text is behind Google's bot-wall, so these are the excerpts search surfaced.
@@ -211,8 +222,8 @@ def home():
         <span class="svc-emoji">{s[1]}</span><h3>{s[2]}</h3><p>{s[4]}</p>
         <span class="svc-more">Explore<span class="btn-ic">&rarr;</span></span></a>''' for s in SERVICES)
     teaser = "".join(photo(c,f,l) for c,f,l in GALLERY[:6])
-    # marquee: render the logo set twice so the CSS loop is seamless
-    brow = "".join(f'<img src="assets/{f}" alt="{n}" loading="lazy" title="{n}">' for f,n in BRANDS)
+    # marquee: render the brand set twice so the CSS loop is seamless
+    brow = "".join(brand_chip(*b) for b in BRANDS)
     brands = brow + brow
     tst = "".join(f'<blockquote class="tst"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
                   for n,r,q in TESTIMONIALS)
