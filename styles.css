@@ -383,6 +383,10 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .section{padding:60px 0}
   .hero{padding-top:6px}
   .hero-in{padding-block:12px 40px}             /* tighten the gap under the nav (keep side padding) */
+  /* stacked full-width on phones -> center the hero so it reads as intentional */
+  .hero-copy{text-align:center}
+  .hero-copy>p{margin-inline:auto}
+  .hero-btns{justify-content:center}
   .hero-copy h1{font-size:2.35rem}              /* fit within the screen with margin */
   .hero-art{max-width:100%}
   .hero-frame{transform:none}                   /* no rotation -> no right-edge overflow */
