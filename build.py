@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=14"
+CSSV = "styles.css?v=15"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 
@@ -85,7 +85,11 @@ def head(title, desc, page=""):
 <a class="skip" href="#main">Skip to content</a>'''
 
 def brandmark(cls=""):
-    return f'<a class="brand {cls}" href="index.html" aria-label="{BIZ} home"><img src="assets/logo-primary.png" alt="{BIZ}" width="150" height="150"></a>'
+    # logo-mark.png = just the script "B" (cropped from the full logo, whose built-in
+    # wordmark was illegible at nav size). The name sits beside it as real type.
+    return (f'<a class="brand {cls}" href="index.html" aria-label="{BIZ} home">'
+            f'<img src="assets/logo-mark.png" alt="" width="863" height="810">'
+            f'<span class="brand-name">B&nbsp;Printing&nbsp;&amp;&nbsp;Wraps</span></a>')
 
 def nav(active):
     links = "".join(
