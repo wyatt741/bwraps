@@ -99,7 +99,9 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .hero::before{width:400px;height:400px;background:rgba(230,24,126,.14);top:-140px;left:-90px}
 .hero::after{width:340px;height:340px;background:rgba(255,90,168,.16);top:-40px;right:-70px}
 .hero-in{position:relative;z-index:1}
-.hero-in{display:grid;grid-template-columns:1.06fr .94fr;gap:56px;align-items:center;padding:56px 0 72px}
+/* padding-block (not the shorthand) so .wrap's side padding survives - the shorthand
+   was zeroing it out and letting hero content run off both screen edges on mobile */
+.hero-in{display:grid;grid-template-columns:1.06fr .94fr;gap:56px;align-items:center;padding-block:56px 72px}
 .hero-copy h1{font-size:clamp(2.6rem,6vw,4.5rem);letter-spacing:-.035em;margin:8px 0 20px;text-wrap:balance}
 .hero-copy .hl{color:var(--pink);position:relative;white-space:nowrap}
 .hero-copy>p{font-size:1.18rem;color:var(--muted);max-width:46ch}
@@ -380,7 +382,7 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .brand-name{font-size:.9rem}                  /* keep the lockup inside the pill on phones */
   .section{padding:60px 0}
   .hero{padding-top:6px}
-  .hero-in{padding:12px 0 40px}                 /* tighten the big empty gap under the nav */
+  .hero-in{padding-block:12px 40px}             /* tighten the gap under the nav (keep side padding) */
   .hero-copy h1{font-size:2.35rem}              /* fit within the screen with margin */
   .hero-art{max-width:100%}
   .hero-frame{transform:none}                   /* no rotation -> no right-edge overflow */
