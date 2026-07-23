@@ -441,7 +441,7 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
 .cw-i-x{opacity:0;transform:rotate(-90deg)}
 .cw--open .cw-i-chat{opacity:0;transform:rotate(90deg)}
 .cw--open .cw-i-x{opacity:1;transform:rotate(0)}
-.cw-panel{position:absolute;right:0;bottom:74px;width:min(374px,calc(100vw - 40px));height:min(540px,calc(100vh - 120px));
+.cw-panel{position:absolute;right:0;bottom:74px;overscroll-behavior:contain;width:min(374px,calc(100vw - 40px));height:min(540px,calc(100vh - 120px));
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden}
 .cw-panel[hidden]{display:none}
 .cw-head{display:flex;align-items:center;gap:10px;padding:13px 14px;background:var(--night);color:#fff}
@@ -453,7 +453,8 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
 .cw-x-btn{background:none;border:0;color:#fff;cursor:pointer;opacity:.8;padding:4px;display:grid;place-items:center}
 .cw-x-btn svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round}
 .cw-x-btn:hover{opacity:1}
-.cw-log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--paper2)}
+/* overscroll-behavior:contain stops the scroll chaining to the page behind the chat */
+.cw-log{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--paper2)}
 .cw-msg{max-width:84%;padding:10px 14px;border-radius:15px;font-size:.93rem;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
 .cw-bot{align-self:flex-start;background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:4px;color:var(--ink)}
 .cw-user{align-self:flex-end;background:var(--grad);color:#fff;border-bottom-right-radius:4px}
@@ -475,4 +476,9 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
 .cw-send svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .cw-send:disabled{opacity:.5;cursor:default}
 .cw-note{font-size:.67rem;color:var(--muted);text-align:center;padding:0 12px 10px;background:var(--surface);margin:0}
-@media (max-width:600px){.cw{right:14px;bottom:14px}.cw-bubble{width:54px;height:54px}}
+@media (max-width:600px){
+  .cw{right:14px;bottom:14px}.cw-bubble{width:54px;height:54px}
+  /* freeze the page while the chat is open on phones, so a drag inside a short
+     message log can't scroll the site behind it */
+  body:has(.cw--open){overflow:hidden}
+}
