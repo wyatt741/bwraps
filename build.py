@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=7"
+CSSV = "styles.css?v=8"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 
@@ -97,10 +97,10 @@ def nav(active):
   {brandmark()}
   <nav class="nav-links">{links}</nav>
   {TOGGLE}
-  <a class="btn btn-primary btn-sm nav-cta" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>
+  <a class="btn btn-primary btn-sm nav-cta cta-anim" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>
   <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div></header></div>
-<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>{TOGGLE}</div>'''
+<div class="mobile-menu" id="mobile-menu">{mlinks}<a class="btn btn-primary cta-anim" href="contact.html">Get a quote<span class="btn-ic">&rarr;</span></a>{TOGGLE}</div>'''
 
 def cta():
     return f'''<section class="cta-band"><div class="wrap"><div class="cta-card reveal">
@@ -109,7 +109,7 @@ def cta():
     <h2>Got a project? Let's make it loud.</h2>
     <p>Tell us what you need printed, wrapped, or stitched. We'll get you a fast, free quote.</p>
   </div>
-  <div class="cta-btns"><a class="btn btn-glow btn-lg" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
+  <div class="cta-btns"><a class="btn btn-glow btn-lg cta-anim" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
   <a class="btn btn-ghost-light btn-lg" href="tel:{PHONE_TEL}">Call {PHONE}</a></div>
 </div></div></section>'''
 
@@ -257,7 +257,7 @@ def home():
     <span class="eyebrow"><span class="dot"></span>★★★★★ · 5.0 on Google · {CITY.split(",")[0]}, AZ</span>
     <h1>Make your brand <span class="hl">loud</span>, local, and impossible to miss.</h1>
     <p>{BIZ} is your creative print partner in {CITY}. Embroidery, custom apparel, signs, and wraps, all under one roof and out the door fast.</p>
-    <div class="hero-btns"><a class="btn btn-primary btn-lg" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
+    <div class="hero-btns"><a class="btn btn-primary btn-lg cta-anim" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
     <a class="btn btn-ghost btn-lg" href="gallery.html">See our work</a></div>
   </div>
   <div class="hero-art reveal d1">
@@ -311,7 +311,7 @@ def services():
         <div class="svc-row-art reveal"><div class="art-frame">{photo(sid,hero,title)}</div></div>
         <div class="svc-row-copy reveal"><span class="ic-badge ic-badge-lg">{icon(sid)}</span><h2>{title}</h2>
         <p>{blurb}</p><ul class="ticks">{bl}</ul>
-        <a class="btn btn-primary" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
+        <a class="btn btn-primary cta-anim" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
       </div></section>'''
     return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services") + nav("services.html") + f'''
 <main id="main">

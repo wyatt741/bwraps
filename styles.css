@@ -319,6 +319,21 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
     background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-18deg);pointer-events:none}
   .btn-primary:hover::after,.btn-glow:hover::after,.btn-dark:hover::after{animation:sheen .85s var(--ease)}
   @keyframes sheen{to{left:140%}}
+
+  /* idle attention on conversion CTAs: gentle breathe + pink glow (drop-shadow so it isn't clipped) */
+  .cta-anim{animation:ctaBreathe 2.6s ease-in-out infinite}
+  .cta-anim:hover{animation:none}
+  @keyframes ctaBreathe{
+    0%,100%{transform:scale(1);filter:drop-shadow(0 5px 12px rgba(230,24,126,.32))}
+    50%{transform:scale(1.045);filter:drop-shadow(0 10px 20px rgba(230,24,126,.6))}}
+
+  /* chat bubble: expanding pulse ring + slow bob (both stop when the panel is open) */
+  .cw-bubble{animation:cwBob 3.2s ease-in-out infinite}
+  .cw-bubble::after{content:"";position:absolute;inset:0;border-radius:100px;background:var(--pink);z-index:-1;animation:cwRing 2.1s ease-out infinite}
+  .cw--open .cw-bubble{animation:none}
+  .cw--open .cw-bubble::after{animation:none;opacity:0}
+  @keyframes cwBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  @keyframes cwRing{0%{transform:scale(1);opacity:.45}100%{transform:scale(1.75);opacity:0}}
 }
 
 /* ---- responsive ---- */
