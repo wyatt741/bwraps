@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=6"
+CSSV = "styles.css?v=7"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 
@@ -21,6 +21,29 @@ FOUC   = '<script>(function(){try{var t=localStorage.getItem("theme")||"dark";do
 SUN    = '<svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>'
 MOON   = '<svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>'
 TOGGLE = f'<button class="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">{SUN}{MOON}</button>'
+
+# ---- ultra-light line icons (replaces emoji - premium feel per high-end-visual-design) ----
+def _svg(p):
+    return f'<svg class="ic-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{p}</svg>'
+ICON = {
+ "embroidery": _svg('<circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M8.12 8.12 20 20M14.8 14.8 20 4M8.12 15.88 12 12"/>'),
+ "apparel":    _svg('<path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>'),
+ "printing":   _svg('<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8" rx="1"/>'),
+ "wraps":      _svg('<path d="M10 17h4V5H2v12h3M20 17h2v-3.34a4 4 0 0 0-1.17-2.83L19 9h-5v8h1"/><circle cx="7.5" cy="17.5" r="2"/><circle cx="17.5" cy="17.5" r="2"/>'),
+ "pin":        _svg('<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.5"/>'),
+ "bolt":       _svg('<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>'),
+ "palette":    _svg('<path d="M12 22a10 10 0 1 1 0-20 10 10 0 0 1 10 10 3 3 0 0 1-3 3h-1.5a1.5 1.5 0 0 0-1.5 1.5V19a3 3 0 0 1-3 3z"/><circle cx="7.5" cy="10.5" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16.5" cy="10.5" r="1"/>'),
+ "heart":      _svg('<path d="M20.8 5.6a5.5 5.5 0 0 0-7.8 0L12 6.5l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.8 1-1a5.5 5.5 0 0 0 0-7.6z"/>'),
+}
+def icon(name): return ICON.get(name, "")
+
+# why-choose-us features: (icon, title, body)
+FEATURES = [
+ ("pin","Right here in Surprise","A real local shop you can walk into, not an online middleman."),
+ ("bolt","Fast turnarounds","We move quick so you hit your event, launch, or deadline."),
+ ("palette","Everything in house","Print, wrap, and stitch under one roof, so your branding stays consistent."),
+ ("heart","Small-batch friendly","One hat or a thousand shirts, we treat every order like it matters."),
+]
 
 # ---- business facts (verified from bwraps1.com, 2026-07-23) ----
 BIZ      = "B Printing and Wraps"
@@ -219,7 +242,7 @@ def photo(cat, file, label, box=False, lightbox=False):
 def home():
     svc = "".join(
         f'''<a class="svc" href="services.html#{s[0]}">
-        <span class="svc-emoji">{s[1]}</span><h3>{s[2]}</h3><p>{s[4]}</p>
+        <span class="ic-badge">{icon(s[0])}</span><h3>{s[2]}</h3><p>{s[4]}</p>
         <span class="svc-more">Explore<span class="btn-ic">&rarr;</span></span></a>''' for s in SERVICES)
     teaser = "".join(photo(c,f,l) for c,f,l in GALLERY[:6])
     # marquee: render the brand set twice so the CSS loop is seamless
@@ -266,10 +289,7 @@ def home():
 <section class="section"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Why Choose Us</span><h2>Local shop, big-league output</h2></div>
   <div class="feat-grid stagger reveal">
-    <div class="feat"><span class="feat-ic">📍</span><h3>Right here in Surprise</h3><p>A real local shop you can walk into, not an online middleman.</p></div>
-    <div class="feat"><span class="feat-ic">⚡</span><h3>Fast turnarounds</h3><p>We move quick so you hit your event, launch, or deadline.</p></div>
-    <div class="feat"><span class="feat-ic">🎨</span><h3>Everything in house</h3><p>Print, wrap, and stitch under one roof, so your branding stays consistent.</p></div>
-    <div class="feat"><span class="feat-ic">🤝</span><h3>Small-batch friendly</h3><p>One hat or a thousand shirts, we treat every order like it matters.</p></div>
+    {"".join(f'<div class="feat"><span class="ic-badge">{icon(k)}</span><h3>{t}</h3><p>{d}</p></div>' for k,t,d in FEATURES)}
   </div>
 </div></section>
 
@@ -289,7 +309,7 @@ def services():
         flip = " svc-row-flip" if i%2 else ""
         secs += f'''<section class="section svc-row{flip}" id="{sid}"><div class="wrap svc-row-in">
         <div class="svc-row-art reveal"><div class="art-frame">{photo(sid,hero,title)}</div></div>
-        <div class="svc-row-copy reveal"><span class="svc-emoji">{emo}</span><h2>{title}</h2>
+        <div class="svc-row-copy reveal"><span class="ic-badge ic-badge-lg">{icon(sid)}</span><h2>{title}</h2>
         <p>{blurb}</p><ul class="ticks">{bl}</ul>
         <a class="btn btn-primary" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
       </div></section>'''
