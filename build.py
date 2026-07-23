@@ -230,6 +230,15 @@ GALLERY = [
  ("wraps","wrap-blazin.jpg","Truck wrap · Blazin Pest Control"),
  ("embroidery","emb-gear.jpg","Embroidered helmets & gear"),
  ("printing","signs-partybus.jpg","Custom metal sign"),
+ # more real client jobs (owner-confirmed permission), 2026-07:
+ ("printing","engraved-board.jpg","Engraved keepsake board"),
+ ("embroidery","emb-watkins-cap.jpg","Embroidered cap · Watkins Restorations"),
+ ("apparel","apparel-jb-detailing.jpg","Cap & shirt set · JB Car Detailing"),
+ ("printing","decal-barkbrew.jpg","Custom decal · Bark & Brew"),
+ ("wraps","wrap-fancypoo.jpg","Trailer wrap · Fancy Poo"),
+ ("apparel","apparel-judgenot.jpg","Custom tee · Judge Not Photography"),
+ ("printing","decal-beamauto.jpg","Logo decal · Beam Auto"),
+ ("apparel","apparel-dryheat.jpg","Custom tee · Dry Heat Junk Removal"),
 ]
 GCATS = [("all","Everything"),("embroidery","Embroidery"),("apparel","Apparel & DTF"),
          ("printing","Printing"),("wraps","Wraps")]
@@ -386,7 +395,7 @@ def gallery():
 <section class="section" style="padding-top:24px"><div class="wrap">
   <div class="stats reveal">
     <div class="stat"><strong>5.0★</strong><span>rating on Google</span></div>
-    <div class="stat"><strong>20+</strong><span>5-star reviews</span></div>
+    <div class="stat"><strong>50+</strong><span>5-star reviews</span></div>
     <div class="stat"><strong>In-house</strong><span>print · wrap · stitch</span></div>
     <div class="stat"><strong>Fast</strong><span>local turnaround</span></div>
   </div>
