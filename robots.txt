@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bwraps1.com/sitemap.xml
