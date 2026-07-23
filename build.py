@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=10"
+CSSV = "styles.css?v=12"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 

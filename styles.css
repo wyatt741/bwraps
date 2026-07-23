@@ -268,10 +268,10 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 /* ---- contact ---- */
 .contact-in{display:grid;grid-template-columns:1.3fr .7fr;gap:36px;align-items:start}
 .cform{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:34px;display:grid;gap:16px;box-shadow:var(--shadow-soft)}
-.cform label{font-family:var(--disp);font-weight:600;font-size:.9rem;display:grid;gap:7px}
-.cform input,.cform select,.cform textarea{font-family:var(--body);font-size:1rem;padding:13px 15px;border:1.5px solid var(--line-2);border-radius:12px;background:var(--paper2);color:var(--ink);transition:.25s}
+.cform label{font-family:var(--disp);font-weight:600;font-size:.9rem;display:grid;gap:7px;min-width:0}
+.cform input,.cform select,.cform textarea{width:100%;min-width:0;font-family:var(--body);font-size:1rem;padding:13px 15px;border:1.5px solid var(--line-2);border-radius:12px;background:var(--paper2);color:var(--ink);transition:.25s}
 .cform input:focus,.cform select:focus,.cform textarea:focus{outline:none;border-color:var(--pink);background:var(--surface);box-shadow:0 0 0 4px rgba(230,24,126,.1)}
-.f-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;min-width:0}
 .cform button{justify-self:start;margin-top:4px}
 .form-fine{font-family:var(--body);color:var(--muted);font-size:.9rem;font-weight:400}
 .contact-side{display:grid;gap:14px}
@@ -367,17 +367,31 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .cta-card{padding:40px}
 }
 @media (max-width:600px){
+  .wrap{padding:0 18px}
   .nav-links,.nav-cta{display:none}.burger{display:flex}
-  .nav-in{margin:0 16px}
+  .nav-in{margin:0 12px;gap:10px}
+  .nav-in .theme-toggle{margin-left:auto}       /* push toggle + burger to the right edge */
   .section{padding:60px 0}
-  .svc-grid,.feat-grid,.gal-grid,.ind-grid,.usecase-grid,.stats{grid-template-columns:1fr 1fr;gap:12px}
+  .hero{padding-top:6px}
+  .hero-in{padding:12px 0 40px}                 /* tighten the big empty gap under the nav */
+  .hero-copy h1{font-size:2.35rem}              /* fit within the screen with margin */
+  .hero-art{max-width:100%}
+  .hero-frame{transform:none}                   /* no rotation -> no right-edge overflow */
+  .hero-badge,.hero-chip{display:none}          /* floating accents poke off-screen on phones */
+  .brands-in{flex-direction:column;align-items:flex-start;gap:14px}
+  .svc-grid,.feat-grid,.gal-grid,.usecase-grid,.stats{grid-template-columns:1fr 1fr;gap:12px}
   .gal-masonry .tile:nth-child(7n+1){grid-row:span 1}
   .gal-masonry .tile:nth-child(7n+1) img{aspect-ratio:4/3}
   .f-row{grid-template-columns:1fr}
   .foot-grid,.about-facts{grid-template-columns:1fr}
-  .hero-copy h1{font-size:2.7rem}
-  .hero-chip{width:88px;height:88px}
   .cta-card{padding:32px 24px}
+  .cform{padding:24px 20px}                     /* less padding so inputs have room */
+  .page-hero h1{font-size:2.05rem}              /* clear the right edge */
+  .stat{padding:24px 14px}
+  .stat strong{font-size:1.7rem}                /* "In-house" fits on one line */
+}
+@media (max-width:380px){
+  .hero-copy h1{font-size:2.15rem}              /* smallest phones: keep the headline off the edge */
 }
 
 /* ============================ DARK THEME (default) ============================ */
