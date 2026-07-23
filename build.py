@@ -214,6 +214,22 @@ GALLERY = [
  ("wraps","wrap-window-perf.jpg","Vehicle window perf"),
  ("embroidery","emb-hat-shirt.png","Hat & shirt combo"),
  ("embroidery","emb-hats-shirts-2.jpg","Custom embroidered set"),
+ # pulled from their Google Business Profile (owner-posted), 2026-07:
+ ("wraps","wrap-kodeblue.jpg","Trailer wrap · Kode Blue Plumbing"),
+ ("embroidery","emb-shores-hat.jpg","Embroidered hat · Shores Plumbing"),
+ ("printing","stickers-sugardaddys.jpg","Die-cut character stickers"),
+ ("wraps","wrap-veteran.jpg","Truck wrap · Veteran & Family Cleanup"),
+ ("apparel","apparel-tumblers.jpg","Custom printed tumblers"),
+ ("embroidery","emb-machine.jpg","In the shop · embroidery in progress"),
+ ("wraps","wrap-boutique-suv.jpg","SUV wrap · local boutique"),
+ ("printing","signs-cuddlypet.jpg","Storefront window signs · Cuddly Pet"),
+ ("embroidery","emb-polo-cap.jpg","Embroidered polo & cap set"),
+ ("wraps","wrap-flag-perf.jpg","Rear window perf · American flag"),
+ ("apparel","apparel-tumbler-hg.jpg","Engraved tumbler"),
+ ("printing","print-longwongs.jpg","Framed print · Long Wongs"),
+ ("wraps","wrap-blazin.jpg","Truck wrap · Blazin Pest Control"),
+ ("embroidery","emb-gear.jpg","Embroidered helmets & gear"),
+ ("printing","signs-partybus.jpg","Custom metal sign"),
 ]
 GCATS = [("all","Everything"),("embroidery","Embroidery"),("apparel","Apparel & DTF"),
          ("printing","Printing"),("wraps","Wraps")]
