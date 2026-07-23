@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=9"
+CSSV = "styles.css?v=10"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=1"
 
@@ -216,10 +216,13 @@ GALLERY = [
 GCATS = [("all","Everything"),("embroidery","Embroidery"),("apparel","Apparel & DTF"),
          ("printing","Printing"),("wraps","Wraps")]
 
-# industries served (Wall of Fame) with real illustrative tiles
+# industries served (Wall of Fame) — real photos + real use-case copy from bwraps1.com.
+# (photo, headline, line). Lives on the Services page now (moved off About to avoid dup).
 INDUSTRIES = [
- ("case-foodtruck.png","Food trucks"),("case-realestate.png","Real estate"),
- ("case-gym.png","Gyms & fitness"),("case-school.png","Schools & teams"),
+ ("case-foodtruck.png","Food trucks","A tasty new look that turns heads at every stop."),
+ ("case-realestate.png","Real estate","Branding that stands out in a crowded market."),
+ ("case-gym.png","Gyms & fitness","Wall wraps and apparel that motivate your members."),
+ ("case-school.png","Schools & teams","Spirit wear that actually shows some spirit."),
 ]
 
 # brands we print on. First 4 = real logos verified on bwraps1.com. The rest are
@@ -331,6 +334,7 @@ def services():
         <div class="ideal"><span class="ideal-label">Ideal for</span>{chips}</div>
         <a class="btn btn-primary cta-anim" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
       </div></section>'''
+    uses = "".join(f'<figure class="usecase"><img src="assets/{f}" alt="{t}" loading="lazy"><figcaption><strong>{t}</strong><span>{d}</span></figcaption></figure>' for f,t,d in INDUSTRIES)
     return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services") + nav("services.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
@@ -338,6 +342,11 @@ def services():
   <p>Four lines, one shop, all under one roof in {CITY.split(",")[0]}. Embroidery, custom apparel and DTF, printing and signs, and vehicle wraps. Mix and match to brand your whole business, and get it out the door fast.</p>
 </div></section>
 {secs}
+<section class="section"><div class="wrap">
+  <div class="sec-head center reveal"><span class="eyebrow">Who we work with</span><h2>Built for local businesses</h2>
+    <p>From food trucks to real estate to gyms and schools, we help {CITY.split(",")[0]} brands show up loud.</p></div>
+  <div class="usecase-grid stagger reveal">{uses}</div>
+</div></section>
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Not sure what you need?</span><h2>Tell us the goal, we'll figure out the how</h2>
     <p>New logo on 50 shirts, a truck that turns heads, a banner for Saturday. Describe it and we'll point you to the right service and a fast quote.</p></div>
@@ -356,7 +365,15 @@ def gallery():
   <span class="eyebrow">Gallery</span><h1>See the work</h1>
   <p>Real jobs for real local businesses, truck and trailer wraps, embroidered hats and apparel, DTF, banners and signage. Every photo here left our shop in {CITY.split(",")[0]}. Tap any one to view it bigger.</p>
 </div></section>
-<section class="section"><div class="wrap">
+<section class="section" style="padding-top:24px"><div class="wrap">
+  <div class="stats reveal">
+    <div class="stat"><strong>5.0★</strong><span>rating on Google</span></div>
+    <div class="stat"><strong>20+</strong><span>5-star reviews</span></div>
+    <div class="stat"><strong>In-house</strong><span>print · wrap · stitch</span></div>
+    <div class="stat"><strong>Fast</strong><span>local turnaround</span></div>
+  </div>
+</div></section>
+<section class="section" style="padding-top:24px"><div class="wrap">
   <div class="gfilters reveal">{filt}</div>
   <div class="gal-grid gal-masonry" id="gal">{tiles}</div>
 </div></section>
@@ -371,7 +388,6 @@ def gallery():
 {cta()}{footer()}'''
 
 def about():
-    inds = "".join(f'''<figure class="ind"><img src="assets/{f}" alt="{n}" loading="lazy"><figcaption>{n}</figcaption></figure>''' for f,n in INDUSTRIES)
     fame = "".join(f'<span class="fame-chip">{n}</span>' for n in
         ["Restaurants","Cafes","Gyms & wellness","Auto shops","Real estate","Food trucks","Schools","Non-profits"])
     return head(f"About | {BIZ}", f"{BIZ} is a local print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about") + nav("about.html") + f'''
@@ -395,7 +411,6 @@ def about():
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud to work with local</h2>
     <p>We serve a whole range of businesses around Surprise:</p></div>
-  <div class="ind-grid stagger reveal">{inds}</div>
   <div class="fame reveal">{fame}</div>
 </div></section>
 </main>{cta()}{footer()}'''

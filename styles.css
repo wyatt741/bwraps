@@ -232,6 +232,22 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .ticks li{padding-left:30px;position:relative;font-weight:500}
 .ticks li::before{content:"";position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:100px;background:var(--band);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e6187e' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");background-size:13px;background-repeat:no-repeat;background-position:center}
+/* use-case showcase (services page) */
+.usecase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.usecase{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-soft)}
+.usecase img{width:100%;aspect-ratio:4/5;object-fit:cover;transition:transform .7s var(--ease)}
+.usecase:hover img{transform:scale(1.05)}
+.usecase figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 16px;color:#fff;display:flex;flex-direction:column;gap:3px;
+  background:linear-gradient(to top,rgba(12,6,12,.9),rgba(12,6,12,.4) 55%,transparent)}
+.usecase figcaption strong{font-family:var(--disp);font-weight:800;font-size:1.08rem}
+.usecase figcaption span{font-size:.86rem;opacity:.92;line-height:1.35}
+
+/* stats trust band (gallery page) */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;text-align:center}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 18px;box-shadow:var(--shadow-soft)}
+.stat strong{display:block;font-family:var(--disp);font-weight:800;font-size:2.1rem;color:var(--pink-deep);line-height:1;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:.9rem;margin-top:8px;display:block}
+
 /* "Ideal for" audience chips on service rows */
 .ideal{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:24px}
 .ideal-label{font-family:var(--disp);font-weight:700;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-right:2px}
@@ -354,7 +370,7 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .nav-links,.nav-cta{display:none}.burger{display:flex}
   .nav-in{margin:0 16px}
   .section{padding:60px 0}
-  .svc-grid,.feat-grid,.gal-grid,.ind-grid{grid-template-columns:1fr 1fr;gap:12px}
+  .svc-grid,.feat-grid,.gal-grid,.ind-grid,.usecase-grid,.stats{grid-template-columns:1fr 1fr;gap:12px}
   .gal-masonry .tile:nth-child(7n+1){grid-row:span 1}
   .gal-masonry .tile:nth-child(7n+1) img{aspect-ratio:4/3}
   .f-row{grid-template-columns:1fr}
