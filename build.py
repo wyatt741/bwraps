@@ -196,11 +196,14 @@ GALLERY_REVIEWS = [
  ("Google review","Verified · Surprise, AZ","Needed a rush order of shirts and they were done in a day. Couldn't be happier with how they turned out."),
 ]
 
-# gallery: (category, image-file, label) - all REAL shop photos in assets/
+# gallery: (category, image-file, label) - all REAL shop photos in assets/.
+# storefront + gardencup pulled from their Google Business Profile (owner-posted).
 GALLERY = [
+ ("wraps","wrap-gardencup.jpg","Vending machine wrap · gardencup"),
  ("wraps","wrap-truck-bs.jpg","Truck wrap · BS Removal"),
  ("embroidery","emb-hats-shirts.jpg","Embroidered hats & shirts"),
  ("wraps","wrap-trailer-101.jpg","Trailer wrap · 101 Seamless Gutters"),
+ ("wraps","storefront.jpg","Our shop · window graphics"),
  ("apparel","apparel-custom.png","Custom apparel"),
  ("embroidery","emb-hats-black.png","Custom embroidered hats"),
  ("wraps","wrap-wall.jpg","Interior wall wrap"),
@@ -406,7 +409,7 @@ def about():
       <div><strong>In house</strong><span>Print · wrap · stitch</span></div>
     </div>
   </div>
-  <div class="about-art reveal d1"><div class="art-frame">{photo("wraps","emb-thread.png","In the shop")}</div></div>
+  <div class="about-art reveal d1"><div class="art-frame">{photo("wraps","storefront.jpg","Our shop in Surprise, AZ")}</div></div>
 </div></section>
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud to work with local</h2>
