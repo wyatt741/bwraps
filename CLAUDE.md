@@ -17,8 +17,11 @@ out page width; chat scroll-chaining; hero centered on mobile). **FormSubmit act
 click the confirm link in their inbox to finish. Repo **PUBLIC** for Pages; `docs/` gitignored. Full detail +
 gotchas (HTML-not-cache-busted → hard-refresh; Google photo-pull; **how to actually measure mobile overflow** —
 force width, the flaky pane lies about viewport) in [docs/SESSION_STATE_2026-07-23.md](docs/SESSION_STATE_2026-07-23.md).
-**Owner still owes:** click the FormSubmit activation link, real reviewer names, confirm/trim brands, custom
-domain, and **fix the Google-listing phone** (shows 480-261-2133; correct is 928-230-8525, already on the site).
+**Owner still owes:** click the FormSubmit activation link, real reviewer names, confirm/trim brands, and
+**fix the Google-listing phone** (shows 480-261-2133; correct is 928-230-8525, already on the site).
+**DNS:** Cloudflare zone bwraps1.com created (Free, records DNS-only, Duda still live) — **PENDING GoDaddy
+nameserver swap to `cris.ns.cloudflare.com` + `naya.ns.cloudflare.com`** (needs owner's GoDaddy login).
+New-site cutover is prepped: `bash docs/cutover.sh` (local) once Path-B DNS records point at GitHub.
 
 ## Files
 | Path | Purpose |
