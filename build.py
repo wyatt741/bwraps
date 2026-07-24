@@ -14,7 +14,7 @@ import json
 from datetime import date
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=26"
+CSSV = "styles.css?v=27"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=6"
 

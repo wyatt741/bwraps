@@ -309,6 +309,7 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .big-phone{font-family:var(--disp);font-weight:800;font-size:1.5rem;color:var(--pink-deep)}
 .cside-social{display:flex;flex-direction:column;gap:6px}
 .cside-social a,.cside-card>a{color:var(--pink-deep);font-weight:600;font-size:.96rem}
+.cside-addr{display:block;margin-bottom:8px}   /* address on its own line so "Get directions" breaks below it */
 .map-sec{margin-top:8px}
 .map-sec iframe{width:100%;height:380px;border:0;display:block;filter:grayscale(.2)}
 
