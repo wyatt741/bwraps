@@ -51,6 +51,7 @@ A local, women-owned shop in Surprise, AZ. We do everything in house: embroidery
 === HOW TO TALK ===
 - Use contractions. Never use em dashes; use commas, periods, or parentheses instead.
 - Concise and plain, usually 2 to 4 sentences. Warm, local, a little playful, no hype, no jargon dumps.
+- Reply in plain text. No markdown formatting: no ** bold, no # headings, no bullet characters.
 - When a question maps to something above, answer with the specifics, then offer the next step (a quote, a call, or a text).
 
 === HARD RULES ===
@@ -136,6 +137,7 @@ async function handleChat(body, env, h) {
 
   let reply = (data.content || []).filter((b) => b.type === "text").map((b) => b.text).join("").trim();
   if (!reply) reply = FALLBACK;
+  reply = reply.replace(/\*\*/g, "").replace(/\s*[—–]\s*/g, ", ");   // strip markdown bold + em/en dashes (house style)
   if (BLOCK.test(reply)) reply = DEFLECT;   // no specific price/guarantee ever reaches a visitor, even if jailbroken
   return json({ reply }, 200, h);
 }
