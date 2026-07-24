@@ -105,6 +105,13 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .hero-copy h1{font-size:clamp(2.6rem,6vw,4.5rem);letter-spacing:-.035em;margin:8px 0 20px;text-wrap:balance}
 .hero-copy .hl{color:var(--pink);position:relative;white-space:nowrap}
 .hero-copy>p{font-size:1.18rem;color:var(--muted);max-width:46ch}
+/* hero "come see us" invite: label + maps-linked address + hours */
+.hero-visit{margin-top:20px;display:flex;flex-direction:column;gap:2px;line-height:1.5}
+.hero-visit strong{font-family:var(--disp);font-weight:800;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--pink-deep);margin-bottom:5px}
+[data-theme="dark"] .hero-visit strong{color:var(--pink-soft)}
+.hero-visit a{color:var(--ink);font-weight:600;transition:color .25s}
+.hero-visit a:hover{color:var(--pink)}
+.hero-visit span{color:var(--muted);font-size:.95rem}
 .hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin:28px 0 24px}
 .hero-strip{display:flex;flex-wrap:wrap;gap:9px}
 .hero-strip span{font-family:var(--disp);font-weight:600;font-size:.85rem;background:var(--surface);border:1px solid var(--line-2);padding:8px 15px;border-radius:100px;box-shadow:var(--shadow-soft)}

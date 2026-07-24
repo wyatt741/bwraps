@@ -14,7 +14,7 @@ import json
 from datetime import date
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=23"
+CSSV = "styles.css?v=24"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=3"
 
@@ -342,7 +342,10 @@ def home():
   <div class="hero-copy reveal">
     <span class="eyebrow">★★★★★ · 5.0 on Google · {CITY.split(",")[0]}, AZ</span>
     <h1>Make your brand <span class="hl">loud</span>, local, and impossible to miss.</h1>
-    <p>{BIZ} is your creative print partner in {CITY}. Embroidery, custom apparel, signs, and wraps, all under one roof and out the door fast.</p>
+    <p>Embroidery, custom apparel, signs, and wraps, all under one roof and out the door fast.</p>
+    <p class="hero-visit"><strong>Come see us in person</strong>
+      <a href="{MAPS}" target="_blank" rel="noopener">{ADDR}</a>
+      <span>{HOURS} &middot; Sat &amp; Sun closed</span></p>
     <div class="hero-btns"><a class="btn btn-primary btn-lg cta-anim" href="contact.html">Get a free quote<span class="btn-ic">&rarr;</span></a>
     <a class="btn btn-ghost btn-lg" href="gallery.html">See our work</a></div>
   </div>
