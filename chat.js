@@ -1,29 +1,29 @@
-/* B Printing and Wraps - demo chat assistant. Runs 100% client-side:
-   - guided quote wizard (deterministic, packages the answers)
-   - canned keyword answers for free-text questions (no AI, no backend, no cost)
-   To make quotes actually send in production, POST `answers` to a FormSubmit/
-   Worker endpoint in submitQuote() (one fetch) - marked below. */
+/* B Printing and Wraps chat assistant — HYBRID:
+   - free-text questions -> AI (Cloudflare Worker /chat, Claude Haiku, trained on the shop)
+   - quote WIZARD -> deterministic (no AI); packages answers and POSTs to the Worker /lead
+   Until WORKER_URL is set, it runs as a client-side DEMO (canned keyword answers + the wizard),
+   so nothing breaks before the Worker is deployed. See worker/README.md to deploy + wire up. */
 (function () {
+  // ==== set this to your deployed Worker URL (no trailing slash) to turn on real AI ====
+  var WORKER_URL = "";   // e.g. "https://bwraps-chat.yoursubdomain.workers.dev"
+  // ====================================================================================
+
   var root = document.getElementById("cw");
   if (!root) return;
-
-  var bubble = document.getElementById("cw-bubble");
-  var panel  = document.getElementById("cw-panel");
-  var closeB = document.getElementById("cw-close");
-  var log    = document.getElementById("cw-log");
-  var form   = document.getElementById("cw-form");
-  var input  = document.getElementById("cw-input");
-  var sendB  = document.getElementById("cw-send");
+  var bubble = document.getElementById("cw-bubble"), panel = document.getElementById("cw-panel"),
+      closeB = document.getElementById("cw-close"), log = document.getElementById("cw-log"),
+      form = document.getElementById("cw-form"), input = document.getElementById("cw-input"),
+      sendB = document.getElementById("cw-send");
 
   var PHONE = "928-230-8525";
+  var AI = !!WORKER_URL;                 // AI mode when a Worker URL is set, else demo mode
+  var history = [];                      // {role, content} for the AI
   var mode = "chat", started = false, busy = false;
 
   // ---------- helpers ----------
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
   function scroll() { log.scrollTop = log.scrollHeight; }
   function setInput(on, ph) { input.disabled = !on; sendB.disabled = !on; input.placeholder = ph || "Type your message..."; }
-
-  // safe linkify: URLs -> <a>, phone -> tel: (no innerHTML)
   function linkify(box, text) {
     var re = /(https?:\/\/[^\s)]+)|(\d{3}-\d{3}-\d{4})/g, last = 0, m;
     while ((m = re.exec(text))) {
@@ -37,12 +37,11 @@
   }
   function addMsg(role, text) { var d = el("div", "cw-msg cw-" + role); linkify(d, text); log.appendChild(d); scroll(); return d; }
   function typing() { var t = el("div", "cw-typing"); t.appendChild(el("span")); t.appendChild(el("span")); t.appendChild(el("span")); log.appendChild(t); scroll(); return t; }
-  function botSay(text, then) { var t = typing(); setTimeout(function () { t.remove(); addMsg("bot", text); if (then) then(); }, 420); }
+  function botSay(text, then) { var t = typing(); setTimeout(function () { t.remove(); addMsg("bot", text); if (then) then(); }, 380); }
   function chips(items) {
     var wrap = el("div", "cw-chips");
     items.forEach(function (it) {
-      var b = el("button", "cw-chip" + (it.ghost ? " cw-chip-ghost" : ""), it.label);
-      b.type = "button";
+      var b = el("button", "cw-chip" + (it.ghost ? " cw-chip-ghost" : ""), it.label); b.type = "button";
       b.addEventListener("click", function () { wrap.remove(); it.act(); });
       wrap.appendChild(b);
     });
@@ -63,61 +62,66 @@
   // ---------- opening menu ----------
   function showMenu() {
     mode = "chat";
-    addMsg("bot", "Hey! 👋 I'm the B Printing assistant. What can I help you with?");
+    addMsg("bot", "Hey! I'm the B Printing assistant. Ask me anything, or pick one:");
     chips([
-      { label: "💬 Get a quote", act: startWizard },
-      { label: "🧵 Our services", act: function () { addMsg("user", "What do you offer?"); botSay(ANSWERS.services); } },
-      { label: "🕒 Hours & location", act: function () { addMsg("user", "Where are you?"); botSay(ANSWERS.hours); } },
+      { label: "Get a quote", act: startWizard },
+      { label: "Our services", act: function () { userMsg("What do you offer?"); route("what do you offer"); } },
+      { label: "Hours & location", act: function () { userMsg("Where are you and when are you open?"); route("hours and location"); } }
     ]);
     setInput(true, "Or type your question...");
   }
+  function userMsg(t) { addMsg("user", t); }
 
-  // ---------- canned answers (keyword router) ----------
+  // ---------- free-text: AI when configured, else canned ----------
+  function route(text) {
+    if (AI) return sendChat(text);
+    var res = answer(text);
+    if (typeof res === "function") res(); else botSay(res);
+  }
+  function sendChat(text) {
+    history.push({ role: "user", content: text });
+    busy = true; setInput(false, "..."); var t = typing();
+    fetch(WORKER_URL + "/chat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ messages: history }) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        t.remove();
+        var reply = (d && d.reply) ? d.reply : ("Sorry, I had trouble there. Call or text " + PHONE + ".");
+        history.push({ role: "assistant", content: reply });
+        addMsg("bot", reply);
+      })
+      .catch(function () { t.remove(); addMsg("bot", "Sorry, I couldn't connect. Please call or text " + PHONE + "."); })
+      .finally(function () { busy = false; setInput(true, "Ask anything else..."); input.focus(); });
+  }
+
+  // ---------- canned fallback answers (demo mode only) ----------
   var ANSWERS = {
     services: "We do it all in house: embroidery (hats, polos, towels), custom apparel & DTF, printing & signs (banners, stickers, large format), and vehicle, trailer & wall wraps. Want a quote on any of it?",
     hours: "We're at 16551 N Dysart Rd #107, Surprise, AZ 85378. Open Mon-Fri 9am-5pm, closed weekends. Call or text " + PHONE + ".",
-    embroidery: "Embroidery is our featured service, the stitchin' is bitchin'! Hats, company polos, workwear, monogram towels & robes, team spirit wear. Want a quote?",
-    apparel: "Custom apparel & DTF: screen printing, direct-to-film transfers, wholesale gang sheets, and heat-press one-offs. How many pieces are you thinking?",
-    printing: "Printing & signs: banners, yard signs, stickers, decals, business cards, flyers, and large format. What are you printing?",
-    wraps: "Wraps are a specialty, vehicles, trailers, fleets, walls, windows, and even vending machines. What are we wrapping?",
     price: "Pricing depends on the product, quantity, and artwork, so the fastest way is a quick quote. Want me to grab a few details? Or call/text " + PHONE + ".",
-    turnaround: "Turnaround depends on the job, but we move fast and can often handle rush orders, one customer needed 3 shirts done in a day and we made it happen. Want a quote?",
-    contact: "Easiest ways to reach us: call or text " + PHONE + ", or use the quote form on the site. Want me to start a quote here?",
-    thanks: "Anytime! Want me to start a quick quote, or is there anything else?",
-    fallback: "Good question, the team can get you a precise answer. Want me to start a quick quote, or you can call/text " + PHONE + "."
+    contact: "Easiest ways to reach us: call or text " + PHONE + ", or the quote form on the site. Want me to start a quote here?",
+    fallback: "Good question, the team can get you a precise answer. Want me to start a quick quote, or call/text " + PHONE + "."
   };
   function answer(text) {
-    var q = text.toLowerCase();
-    var has = function (arr) { return arr.some(function (w) { return q.indexOf(w) !== -1; }); };
+    var q = text.toLowerCase(), has = function (a) { return a.some(function (w) { return q.indexOf(w) !== -1; }); };
     if (has(["quote", "estimate", "order", "get started"])) return startWizard;
     if (has(["price", "cost", "how much", "pricing", "$"])) return ANSWERS.price;
     if (has(["hour", "open", "where", "location", "address", "directions"])) return ANSWERS.hours;
-    if (has(["embroider", "hat", "stitch", "polo", "towel", "monogram"])) return ANSWERS.embroidery;
-    if (has(["shirt", "apparel", "dtf", "screen print", "tee", "t-shirt", "hoodie"])) return ANSWERS.apparel;
-    if (has(["banner", "sign", "sticker", "decal", "flyer", "print", "card"])) return ANSWERS.printing;
-    if (has(["wrap", "vehicle", "truck", "trailer", "van", "car", "window", "vending", "wall"])) return ANSWERS.wraps;
-    if (has(["how long", "turnaround", "rush", "fast", "when"])) return ANSWERS.turnaround;
+    if (has(["embroider", "hat", "apparel", "dtf", "shirt", "print", "banner", "sticker", "sign", "wrap", "vehicle", "service", "offer"])) return ANSWERS.services;
     if (has(["contact", "call", "text", "phone", "email", "reach"])) return ANSWERS.contact;
-    if (has(["service", "offer", "do you", "what do"])) return ANSWERS.services;
-    if (has(["thank", "thanks", "great", "awesome", "perfect"])) return ANSWERS.thanks;
     return ANSWERS.fallback;
   }
 
-  // ---------- quote wizard (deterministic) ----------
+  // ---------- quote wizard (deterministic; never AI) ----------
   var STEPS = [
     { key: "service", q: "Let's build your quote! What do you need?", opts: ["Embroidery", "Apparel & DTF", "Printing & Signs", "Wraps", "Not sure yet"] },
-    { key: "qty",     q: "Roughly how many pieces (or how big a job)?", opts: ["Just 1-5", "6-24", "25-100", "100+ / not sure"] },
+    { key: "size",    q: "Roughly how many pieces (or how big a job)?", opts: ["Just 1-5", "6-24", "25-100", "100+ / not sure"] },
     { key: "details", q: "Tell me a bit about the project, colors, sizes, deadline, or skip.", text: true, optional: true },
     { key: "name",    q: "Great. What's your name?", text: true },
-    { key: "contact", q: "Best phone or email for your quote?", text: true }
+    { key: "email",   q: "Best email for your quote?", text: true, email: true },
+    { key: "phone",   q: "A phone number in case we need it? Optional, type or skip.", text: true, optional: true }
   ];
   var answers = {}, step = 0, skipWrap = null;
-
-  function startWizard() {
-    mode = "wizard"; answers = {}; step = 0;
-    addMsg("user", "I'd like a quote");
-    botSay(STEPS[0].q, function () { renderStep(); });
-  }
+  function startWizard() { mode = "wizard"; answers = {}; step = 0; addMsg("user", "I'd like a quote"); botSay(STEPS[0].q, renderStep); }
   function runStep() { if (step >= STEPS.length) return submitQuote(); botSay(STEPS[step].q, renderStep); }
   function renderStep() {
     var s = STEPS[step];
@@ -131,30 +135,36 @@
     }
   }
   function wizardText(text) {
+    var s = STEPS[step];
+    if (s.email && !/.+@.+\..+/.test(text)) { addMsg("bot", "Hmm, that doesn't look like an email. Mind trying again?"); input.focus(); return; }
     if (skipWrap) { skipWrap.remove(); skipWrap = null; }
-    addMsg("user", text); answers[STEPS[step].key] = text; step++; runStep();
+    addMsg("user", text); answers[s.key] = text; step++; runStep();
   }
   function submitQuote() {
     mode = "chat";
-    // PRODUCTION: send the lead, e.g.
-    //   fetch("https://formsubmit.co/ajax/elitecustomprinting@outlook.com", {method:"POST",
-    //     headers:{'content-type':'application/json'}, body: JSON.stringify(answers)});
-    botSay("Perfect, that's everything I need, thanks " + (answers.name || "") + "! 🎉", function () {
-      botSay("In the live site this sends straight to the shop. For now, call or text " + PHONE + " and mention your " + (answers.service || "project") + " and we'll get you a quote fast.", function () {
-        setInput(true, "Ask anything else...");
+    if (!AI) {   // demo mode: no backend to send to
+      botSay("Perfect, that's everything, thanks " + (answers.name || "") + "!", function () {
+        botSay("In the live site this sends straight to the shop. For now, call or text " + PHONE + " and mention your " + (answers.service || "project") + " and we'll get you a quote fast.", function () { setInput(true, "Ask anything else..."); });
       });
-    });
+      return;
+    }
+    setInput(false, "Sending..."); var t = typing();
+    fetch(WORKER_URL + "/lead", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(answers) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        t.remove();
+        if (d && d.ok) addMsg("bot", "Perfect, that's everything, thanks " + (answers.name || "") + "! We'll put together a quote and get back to you soon. Need it faster? Call or text " + PHONE + ".");
+        else addMsg("bot", "I couldn't send that just now. Please call or text " + PHONE + " and we'll sort your quote.");
+      })
+      .catch(function () { t.remove(); addMsg("bot", "I couldn't connect to send that. Please call or text " + PHONE + "."); })
+      .finally(function () { setInput(true, "Ask anything else..."); });
   }
 
   // ---------- input routing ----------
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var text = input.value.trim();
-    if (!text || busy) return;
-    input.value = "";
+    var text = input.value.trim(); if (!text || busy) return; input.value = "";
     if (mode === "wizard" && STEPS[step] && STEPS[step].text) { wizardText(text); return; }
-    addMsg("user", text);
-    var res = answer(text);
-    if (typeof res === "function") { res(); } else { botSay(res); }
+    mode = "chat"; userMsg(text); route(text);
   });
 })();
