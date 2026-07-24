@@ -13,12 +13,16 @@
   var bubble = document.getElementById("cw-bubble"), panel = document.getElementById("cw-panel"),
       closeB = document.getElementById("cw-close"), log = document.getElementById("cw-log"),
       form = document.getElementById("cw-form"), input = document.getElementById("cw-input"),
-      sendB = document.getElementById("cw-send");
+      sendB = document.getElementById("cw-send"),
+      nudge = document.getElementById("cw-nudge"), nudgeOpen = document.getElementById("cw-nudge-open"),
+      nudgeX = document.getElementById("cw-nudge-x");
 
   var PHONE = "928-230-8525";
   var AI = !!WORKER_URL;                 // AI mode when a Worker URL is set, else demo mode
   var history = [];                      // {role, content} for the AI
+  var transcript = [];                   // {role, text} full visible log -> emailed with a lead
   var mode = "chat", started = false, busy = false;
+  var userTurns = 0, lastUserQ = "", offeredFollowup = false;   // drive the intent-based follow-up capture
 
   // ---------- helpers ----------
   function el(t, c, x) { var n = document.createElement(t); if (c) n.className = c; if (x != null) n.textContent = x; return n; }
@@ -35,7 +39,8 @@
     }
     if (last < text.length) box.appendChild(document.createTextNode(text.slice(last)));
   }
-  function addMsg(role, text) { var d = el("div", "cw-msg cw-" + role); linkify(d, text); log.appendChild(d); scroll(); return d; }
+  function addMsg(role, text) { transcript.push({ role: role, text: text }); var d = el("div", "cw-msg cw-" + role); linkify(d, text); log.appendChild(d); scroll(); return d; }
+  function transcriptText() { return transcript.map(function (m) { return (m.role === "user" ? "Visitor" : "Assistant") + ": " + m.text; }).join("\n"); }
   function typing() { var t = el("div", "cw-typing"); t.appendChild(el("span")); t.appendChild(el("span")); t.appendChild(el("span")); log.appendChild(t); scroll(); return t; }
   function botSay(text, then) { var t = typing(); setTimeout(function () { t.remove(); addMsg("bot", text); if (then) then(); }, 380); }
   function chips(items) {
@@ -48,8 +53,22 @@
     log.appendChild(wrap); scroll(); return wrap;
   }
 
+  // ---------- proactive nudge (once per session, after a delay) ----------
+  function hideNudge(dismiss) { if (!nudge) return; nudge.hidden = true; if (dismiss) { try { sessionStorage.setItem("cw-nudge", "1"); } catch (e) {} } }
+  function showNudge() {
+    if (!nudge || started || !panel.hidden) return;
+    try { if (sessionStorage.getItem("cw-nudge")) return; } catch (e) {}
+    nudge.hidden = false;
+  }
+  if (nudge) {
+    nudgeOpen.addEventListener("click", function () { hideNudge(true); open(); });
+    nudgeX.addEventListener("click", function () { hideNudge(true); });
+    setTimeout(showNudge, 20000);
+  }
+
   // ---------- open / close ----------
   function open() {
+    hideNudge(true);
     panel.hidden = false; bubble.setAttribute("aria-expanded", "true"); root.classList.add("cw--open");
     if (!started) { started = true; showMenu(); }
     setTimeout(function () { (input.disabled ? bubble : input).focus(); }, 60);
@@ -74,9 +93,10 @@
 
   // ---------- free-text: AI when configured, else canned ----------
   function route(text) {
+    userTurns++; lastUserQ = text;
     if (AI) return sendChat(text);
     var res = answer(text);
-    if (typeof res === "function") res(); else botSay(res);
+    if (typeof res === "function") res(); else botSay(res, function () { maybeOfferFollowup(text); });
   }
   function sendChat(text) {
     history.push({ role: "user", content: text });
@@ -90,7 +110,27 @@
         addMsg("bot", reply);
       })
       .catch(function () { t.remove(); addMsg("bot", "Sorry, I couldn't connect. Please call or text " + PHONE + "."); })
-      .finally(function () { busy = false; setInput(true, "Ask anything else..."); input.focus(); });
+      .finally(function () { busy = false; setInput(true, "Ask anything else..."); input.focus(); maybeOfferFollowup(text); });
+  }
+
+  // ---------- intent-based follow-up capture: offer once, after intent or a couple of turns ----------
+  function maybeOfferFollowup(text) {
+    if (offeredFollowup || mode !== "chat") return;
+    var q = (text || "").toLowerCase();
+    var intent = ["price", "cost", "how much", "pricing", "quote", "turnaround", "how long", "how fast",
+                  "when can", "deadline", "rush", "estimate", "lead time"].some(function (w) { return q.indexOf(w) !== -1; });
+    if (!(intent || userTurns >= 2)) return;
+    offeredFollowup = true;
+    setTimeout(offerFollowup, 700);
+  }
+  function offerFollowup() {
+    if (mode !== "chat") return;
+    botSay("Want the shop to follow up with you directly? I can pass along your question and our chat so Shar and the team can help.", function () {
+      chips([
+        { label: "Yes, please", act: startFollowup },
+        { label: "No thanks", ghost: true, act: function () { botSay("No problem! Ask me anything else, or reach the shop anytime at " + PHONE + "."); } }
+      ]);
+    });
   }
 
   // ---------- canned fallback answers (demo mode only) ----------
@@ -149,7 +189,8 @@
       return;
     }
     setInput(false, "Sending..."); var t = typing();
-    fetch(WORKER_URL + "/lead", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(answers) })
+    var payload = Object.assign({}, answers, { source: "AI chat widget quote wizard", transcript: transcriptText() });
+    fetch(WORKER_URL + "/lead", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) })
       .then(function (r) { return r.json(); })
       .then(function (d) {
         t.remove();
@@ -160,11 +201,50 @@
       .finally(function () { setInput(true, "Ask anything else..."); });
   }
 
+  // ---------- follow-up capture (from free-text chat; name + email/phone -> emailed to owner with transcript) ----------
+  var FUP_STEPS = [
+    { key: "name", q: "Awesome. What's your name?", text: true },
+    { key: "contact", q: "And the best way to reach you, an email or phone number?", text: true, contact: true }
+  ];
+  var fanswers = {}, fstep = 0;
+  function startFollowup() { mode = "followup"; fanswers = {}; fstep = 0; addMsg("user", "Yes, please follow up"); botSay(FUP_STEPS[0].q, renderFStep); }
+  function runFStep() { if (fstep >= FUP_STEPS.length) return submitFollowup(); botSay(FUP_STEPS[fstep].q, renderFStep); }
+  function renderFStep() { setInput(true, FUP_STEPS[fstep].contact ? "Email or phone..." : "Type your answer..."); input.focus(); }
+  function followupText(text) {
+    var s = FUP_STEPS[fstep];
+    if (s.contact) {
+      var hasEmail = /.+@.+\..+/.test(text), hasPhone = text.replace(/\D/g, "").length >= 7;
+      if (!hasEmail && !hasPhone) { addMsg("bot", "Hmm, that doesn't look like an email or phone number. Mind trying again?"); input.focus(); return; }
+    }
+    addMsg("user", text); fanswers[s.key] = text; fstep++; runFStep();
+  }
+  function submitFollowup() {
+    mode = "chat";
+    var contact = fanswers.contact || "", isEmail = /.+@.+\..+/.test(contact);
+    if (!AI) {   // demo mode: no backend to send to
+      botSay("Perfect, thanks " + (fanswers.name || "") + "! On the live site this goes straight to the shop along with our chat, so they can follow up. For now, call or text " + PHONE + ".", function () { setInput(true, "Ask anything else..."); });
+      return;
+    }
+    setInput(false, "Sending..."); var t = typing();
+    var payload = { name: fanswers.name || "", email: isEmail ? contact : "", phone: isEmail ? "" : contact,
+      details: lastUserQ || "(asked in chat)", source: "AI chat widget follow-up request", transcript: transcriptText() };
+    fetch(WORKER_URL + "/lead", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) })
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        t.remove();
+        if (d && d.ok) addMsg("bot", "Perfect, thanks " + (fanswers.name || "") + "! I've passed this to the shop and they'll reach out. Need it faster? Call or text " + PHONE + ".");
+        else addMsg("bot", "I couldn't send that just now. Please call or text " + PHONE + ".");
+      })
+      .catch(function () { t.remove(); addMsg("bot", "I couldn't connect to send that. Please call or text " + PHONE + "."); })
+      .finally(function () { setInput(true, "Ask anything else..."); });
+  }
+
   // ---------- input routing ----------
   form.addEventListener("submit", function (e) {
     e.preventDefault();
     var text = input.value.trim(); if (!text || busy) return; input.value = "";
     if (mode === "wizard" && STEPS[step] && STEPS[step].text) { wizardText(text); return; }
+    if (mode === "followup" && FUP_STEPS[fstep] && FUP_STEPS[fstep].text) { followupText(text); return; }
     mode = "chat"; userMsg(text); route(text);
   });
 })();

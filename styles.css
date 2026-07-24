@@ -463,6 +463,15 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
 /* ---- chat widget (demo assistant) ---- */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
 .cw{position:fixed;right:20px;bottom:20px;z-index:120;font-family:var(--body)}
+/* proactive nudge: one gentle speech bubble above the icon (fires once/session after a delay) */
+.cw-nudge{position:absolute;right:2px;bottom:74px;max-width:236px;background:var(--surface);border:1px solid var(--line);
+  border-radius:16px;border-bottom-right-radius:5px;padding:13px 15px;box-shadow:var(--shadow);animation:cwNudge .5s var(--spring) both}
+.cw-nudge[hidden]{display:none}
+.cw-nudge-open{background:none;border:0;cursor:pointer;font-family:var(--body);font-size:.9rem;line-height:1.45;color:var(--ink);text-align:left;padding:0}
+.cw-nudge-x{position:absolute;top:-9px;right:-9px;width:23px;height:23px;border-radius:100px;border:1px solid var(--line);
+  background:var(--surface);color:var(--muted);cursor:pointer;font-size:1.05rem;line-height:1;display:grid;place-items:center;box-shadow:var(--shadow-soft);transition:color .25s}
+.cw-nudge-x:hover{color:var(--ink)}
+@keyframes cwNudge{from{opacity:0;transform:translateY(10px) scale(.95)}to{opacity:1;transform:none}}
 .cw-bubble{position:relative;width:60px;height:60px;border-radius:100px;border:0;cursor:pointer;background:var(--grad);
   box-shadow:0 16px 36px -10px rgba(230,24,126,.6);display:grid;place-items:center;transition:transform .4s var(--spring)}
 .cw-bubble:hover{transform:scale(1.06)}
@@ -507,6 +516,7 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
 .cw-note{font-size:.67rem;color:var(--muted);text-align:center;padding:0 12px 10px;background:var(--surface);margin:0}
 @media (max-width:600px){
   .cw{right:14px;bottom:14px}.cw-bubble{width:54px;height:54px}
+  .cw-nudge{bottom:66px;max-width:210px}
   /* freeze the page while the chat is open on phones, so a drag inside a short
      message log can't scroll the site behind it */
   body:has(.cw--open){overflow:hidden}

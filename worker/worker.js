@@ -1,6 +1,6 @@
 /* B Printing and Wraps chat proxy (Cloudflare Worker).
    - POST /chat  {messages:[{role,content}]}                        -> {reply}   (AI Q&A, Claude Haiku)
-   - POST /lead  {service,size,details,name,email,phone}            -> {ok}       (quote request -> FormSubmit inbox)
+   - POST /lead  {name,email,phone,service,size,details,source,transcript} -> {ok} (lead -> FormSubmit inbox; email OR phone required)
    HYBRID: free-text questions are answered by the AI here; the quote WIZARD stays
    deterministic on the client and only POSTs to /lead (no AI ever touches pricing/leads).
    The Anthropic API key is a Worker SECRET (wrangler secret put ANTHROPIC_API_KEY) and
@@ -143,22 +143,27 @@ async function handleChat(body, env, h) {
 }
 
 async function handleLead(body, h) {
-  const email = String(body.email || "").trim();
-  if (!/.+@.+\..+/.test(email)) return json({ ok: false, error: "email required" }, 400, h);
   const s = (v, max) => String(v || "").slice(0, max || 200).trim();
+  const email = s(body.email);
+  const phone = s(body.phone);
+  const hasEmail = /.+@.+\..+/.test(email);
+  const hasPhone = phone.replace(/\D/g, "").length >= 7;
+  if (!hasEmail && !hasPhone) return json({ ok: false, error: "contact required" }, 400, h);
 
   const payload = {
-    _subject: "New quote request (chat widget) - bwraps1.com",
+    _subject: "New lead (chat widget) - bwraps1.com",
     _template: "table",
     _captcha: "false",
     name: s(body.name) || "(not given)",
-    email,
-    phone: s(body.phone) || "(not given)",
-    "Service": s(body.service),
-    "Size / quantity": s(body.size),
-    "Details": s(body.details, 1500) || "(none)",
-    source: "AI chat widget quote wizard",
+    email: hasEmail ? email : "(none given)",
+    phone: hasPhone ? phone : "(none given)",
+    source: s(body.source) || "AI chat widget",
   };
+  const service = s(body.service), size = s(body.size), details = s(body.details, 1500), transcript = s(body.transcript, 5000);
+  if (service) payload["Service"] = service;
+  if (size) payload["Size / quantity"] = size;
+  if (details) payload["Details / question"] = details;
+  if (transcript) payload["Conversation"] = transcript;
 
   try {
     const r = await fetch("https://formsubmit.co/ajax/" + LEAD_EMAIL, {

@@ -14,9 +14,9 @@ import json
 from datetime import date
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=22"
+CSSV = "styles.css?v=23"
 JSV  = "app.js?v=3"
-CHATV= "chat.js?v=2"
+CHATV= "chat.js?v=3"
 
 # ---- dark-mode: default dark (like anderson-it), toggle persists to localStorage ----
 FOUC   = '<script>(function(){try{var t=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>'
@@ -150,6 +150,10 @@ def chat_widget():
     # Demo assistant: runs fully client-side (see chat.js) - guided quote wizard + canned answers.
     # No backend/API needed for the demo; wiring it to a real inbox is a one-line change in chat.js.
     return '''<div class="cw" id="cw">
+  <div class="cw-nudge" id="cw-nudge" hidden>
+    <button class="cw-nudge-x" id="cw-nudge-x" type="button" aria-label="Dismiss">&times;</button>
+    <button class="cw-nudge-open" id="cw-nudge-open" type="button">Questions about pricing or turnaround? I can help &#128075;</button>
+  </div>
   <button class="cw-bubble" id="cw-bubble" type="button" aria-label="Open the B Printing assistant" aria-expanded="false" aria-controls="cw-panel">
     <svg class="cw-i cw-i-chat" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 21l2.1-5.4A8.5 8.5 0 1 1 21 11.5Z"/></svg>
     <svg class="cw-i cw-i-x" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
