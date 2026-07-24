@@ -406,6 +406,32 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .stat{padding:24px 14px}
   .stat strong{font-size:1.7rem}                /* "In-house" fits on one line */
 }
+/* ---- mobile: center everything (phones) ---- */
+@media (max-width:600px){
+  /* text blocks center */
+  .page-hero .wrap,.sec-head,.svc-row-copy,.about-copy,.svc,.feat,.tst,.cside-card{text-align:center}
+  .page-hero p,.sec-head p,.svc-row-copy>p,.about-copy p,.tst p{margin-inline:auto}
+  /* icon badges + eyebrows sit centered above their centered text */
+  .svc .ic-badge,.feat .ic-badge,.svc-row-copy .ic-badge{margin-inline:auto}
+  .svc-row-copy .eyebrow{display:inline-flex}
+  /* inline-flex groups (buttons, more-links, chips, stars) recenter via the parent's text-align,
+     but flex containers need their own justify */
+  .svc-more,.ideal,.about-facts,.foot-social,.cside-social,.tst-stars{justify-content:center}
+  .about-facts,.cside-social{align-items:center}
+  .tst cite{align-items:center}
+  /* the check-list reads best left-aligned as a block, so center the block, not the lines */
+  .ticks{width:max-content;max-width:100%;margin-inline:auto;text-align:left}
+  .svc-row-copy .btn,.cform button{justify-self:center}
+  /* keep form fields left-aligned (centered input text is bad UX) even though labels center */
+  .cform{text-align:center}
+  .cform input,.cform select,.cform textarea{text-align:left}
+  /* footer + brands strip label center */
+  .foot-brand,.foot-col{text-align:center}
+  .foot-brand .brand,.brand-foot{justify-content:center}
+  .foot-brand p{margin-inline:auto}
+  .legal{justify-content:center;text-align:center}
+  .brands-label{text-align:center}
+}
 @media (max-width:380px){
   .hero-copy h1{font-size:2.15rem}              /* smallest phones: keep the headline off the edge */
 }

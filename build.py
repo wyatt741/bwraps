@@ -10,9 +10,11 @@ logo = hot magenta script "B" + black. So the palette is electric pink + ink +
 warm white, NOT the rainbow-CMYK guess from v1. Every tile is a real shop photo
 downloaded from bwraps1.com into assets/.
 """
+import json
+from datetime import date
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=21"
+CSSV = "styles.css?v=22"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=2"
 
@@ -63,23 +65,51 @@ TIKTOK   = "https://www.tiktok.com/@luckstitch"
 IG       = "https://www.instagram.com/bprinting_/"
 FB       = "https://www.facebook.com/bprintingandwraps"
 
+# ---- SEO: canonical base + share image + LocalBusiness structured data ----
+# Canonical points at the launch domain (bwraps1.com), matching the sitemap, so search
+# consolidates there after cutover. All facts below are real/verified (no fabrication).
+BASE   = f"https://{DOMAIN}"
+OG_IMG = f"{BASE}/assets/storefront.jpg"
+LD_JSON = json.dumps({
+  "@context":"https://schema.org","@type":["LocalBusiness","Store"],"@id":f"{BASE}/#business",
+  "name":BIZ,"description":f"Custom printing, wraps, and embroidery in {CITY}.",
+  "image":OG_IMG,"logo":f"{BASE}/assets/logo-mark.png","url":f"{BASE}/",
+  "telephone":PHONE_TEL,"email":EMAIL,"priceRange":"$$",
+  "address":{"@type":"PostalAddress","streetAddress":"16551 N Dysart Rd #107",
+             "addressLocality":"Surprise","addressRegion":"AZ","postalCode":"85378","addressCountry":"US"},
+  "areaServed":{"@type":"City","name":"Surprise"},"hasMap":MAPS,
+  "openingHoursSpecification":[{"@type":"OpeningHoursSpecification",
+    "dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"17:00"}],
+  "sameAs":[IG,FB,TIKTOK],
+  "aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"20"},
+}, separators=(",",":"))
+
 # "Contact" is a header nav link; the animated "Get a quote" button (also -> contact.html) is the primary CTA.
 NAV = [("index.html","Home"),("services.html","Services"),("gallery.html","Gallery"),
        ("about.html","About"),("contact.html","Contact")]
 FOOT_NAV = NAV
 
 # ============================ SHARED CHROME ============================
-def head(title, desc, page=""):
+def head(title, desc, page="", path="index.html"):
+    canon = f"{BASE}/{path}"
     return f'''<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{title}</title><meta name="description" content="{desc}">
+<link rel="canonical" href="{canon}">
+<meta name="robots" content="index,follow">
 <meta property="og:title" content="{title}"><meta property="og:description" content="{desc}">
-<meta property="og:type" content="website"><meta name="theme-color" content="#e6187e">
+<meta property="og:type" content="website"><meta property="og:url" content="{canon}">
+<meta property="og:site_name" content="{BIZ}"><meta property="og:image" content="{OG_IMG}">
+<meta property="og:locale" content="en_US"><meta name="theme-color" content="#e6187e">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title}"><meta name="twitter:description" content="{desc}">
+<meta name="twitter:image" content="{OG_IMG}">
 <link rel="icon" href="assets/logo-az.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{CSSV}">
+<script type="application/ld+json">{LD_JSON}</script>
 {FOUC}
 </head><body class="{page}">
 <a class="skip" href="#main">Skip to content</a>'''
@@ -302,7 +332,7 @@ def home():
     brands = brow + brow
     tst = "".join(f'<blockquote class="tst"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
                   for n,r,q in TESTIMONIALS)
-    return head(f"{BIZ} | {TAG}", f"Custom printing, wraps, and embroidery in {CITY}. Get a fast, free quote from a local shop that does it all.","home") + nav("index.html") + f'''
+    return head(f"{BIZ} | {TAG}", f"Custom printing, wraps, and embroidery in {CITY}. Get a fast, free quote from a local shop that does it all.","home","index.html") + nav("index.html") + f'''
 <main id="main">
 <section class="hero"><div class="wrap hero-in">
   <div class="hero-copy reveal">
@@ -368,7 +398,7 @@ def services():
         <a class="btn btn-primary cta-anim" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
       </div></section>'''
     uses = "".join(f'<figure class="usecase"><img src="assets/{f}" alt="{t}" loading="lazy"><figcaption><strong>{t}</strong><span>{d}</span></figcaption></figure>' for f,t,d in INDUSTRIES)
-    return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services") + nav("services.html") + f'''
+    return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services","services.html") + nav("services.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Services</span><h1>Everything we make</h1>
@@ -392,7 +422,7 @@ def gallery():
     tiles = "".join(photo(c,f,l,lightbox=True) for c,f,l in GALLERY)
     greviews = "".join(f'<blockquote class="tst"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
                        for n,r,q in GALLERY_REVIEWS)
-    return head(f"Gallery | {BIZ}", f"See real embroidery, apparel, printing, and wrap work from {BIZ} in {CITY}.","gallery") + nav("gallery.html") + f'''
+    return head(f"Gallery | {BIZ}", f"See real embroidery, apparel, printing, and wrap work from {BIZ} in {CITY}.","gallery","gallery.html") + nav("gallery.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Gallery</span><h1>See the work</h1>
@@ -423,7 +453,7 @@ def gallery():
 def about():
     fame = "".join(f'<span class="fame-chip">{n}</span>' for n in
         ["Restaurants","Cafes","Gyms & wellness","Auto shops","Real estate","Food trucks","Schools","Non-profits"])
-    return head(f"About | {BIZ}", f"{BIZ} is a local print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about") + nav("about.html") + f'''
+    return head(f"About | {BIZ}", f"{BIZ} is a local print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about","about.html") + nav("about.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">About</span><h1>Your neighbors with a print shop</h1>
@@ -449,7 +479,7 @@ def about():
 </main>{cta()}{footer()}'''
 
 def contact():
-    return head(f"Contact | {BIZ}", f"Get a free quote from {BIZ} in {CITY}. Call {PHONE} or send us your project.","contact") + nav("contact.html") + f'''
+    return head(f"Contact | {BIZ}", f"Get a free quote from {BIZ} in {CITY}. Call {PHONE} or send us your project.","contact","contact.html") + nav("contact.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Contact</span><h1>Let's get you a quote</h1>
@@ -488,7 +518,10 @@ PAGES = {"index.html":home,"services.html":services,"gallery.html":gallery,
          "about.html":about,"contact.html":contact}
 
 def sitemap():
-    urls = "".join(f"<url><loc>https://{DOMAIN}/{p}</loc></url>" for p in PAGES)
+    today = date.today().isoformat()
+    urls = "".join(
+        f"<url><loc>{BASE}/{p}</loc><lastmod>{today}</lastmod>"
+        f"<priority>{'1.0' if p=='index.html' else '0.8'}</priority></url>" for p in PAGES)
     return f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>'
 
 def build():
