@@ -12,7 +12,7 @@ downloaded from bwraps1.com into assets/.
 """
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=19"
+CSSV = "styles.css?v=20"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=2"
 
@@ -311,7 +311,7 @@ def home():
     <a class="btn btn-ghost btn-lg" href="gallery.html">See our work</a></div>
   </div>
   <div class="hero-art reveal d1">
-    <div class="hero-frame"><img src="assets/wrap-truck-bs.jpg" alt="Custom truck wrap by {BIZ}" width="900" height="675"></div>
+    <div class="hero-frame"><img src="assets/storefront.jpg" alt="{BIZ} storefront in {CITY}" width="1600" height="1200"></div>
     <div class="hero-badge float-a"><img src="assets/logo-az.png" alt="" width="80" height="80"><span>Made in<br>Surprise, AZ</span></div>
     <figure class="hero-chip float-b"><img src="assets/emb-hats-black.png" alt="Custom embroidered hats" loading="lazy"></figure>
   </div>
@@ -437,7 +437,7 @@ def about():
       <div><strong>In house</strong><span>Print · wrap · stitch</span></div>
     </div>
   </div>
-  <div class="about-art reveal d1"><div class="art-frame">{photo("wraps","storefront.jpg","Our shop in Surprise, AZ")}</div></div>
+  <div class="about-art reveal d1"><div class="art-frame">{photo("embroidery","emb-thread.png","In the shop")}</div></div>
 </div></section>
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud to work with local</h2>

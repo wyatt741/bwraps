@@ -112,7 +112,7 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .hero-art{position:relative}
 .hero-frame{padding:8px;background:linear-gradient(160deg,var(--surface),var(--paper2));border:1px solid var(--line-2);
   border-radius:var(--r-xl);box-shadow:var(--shadow);transform:rotate(1.4deg);transition:transform .6s var(--ease)}
-.hero-frame img{border-radius:calc(var(--r-xl) - 8px);aspect-ratio:4/3;object-fit:cover;width:100%}
+.hero-frame img{border-radius:calc(var(--r-xl) - 8px);aspect-ratio:4/3;object-fit:cover;width:100%;height:auto}
 .hero-art:hover .hero-frame{transform:rotate(0)}
 .hero-badge{position:absolute;left:-18px;bottom:24px;display:flex;align-items:center;gap:10px;background:var(--surface);padding:10px 16px 10px 10px;
   border-radius:100px;box-shadow:var(--shadow);border:1px solid var(--line);font-family:var(--disp);font-weight:700;font-size:.8rem;line-height:1.1}
