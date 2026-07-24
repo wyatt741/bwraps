@@ -202,15 +202,17 @@ GALLERY_REVIEWS = [
 # gallery: (category, image-file, label) - all REAL shop photos in assets/.
 # storefront + gardencup pulled from their Google Business Profile (owner-posted).
 GALLERY = [
+ # first 6 are the home "Recent work" teaser — keep them varied; BS-Removal truck +
+ # storefront are moved lower so they're not featured on the home page (storefront is the hero).
  ("wraps","wrap-gardencup.jpg","Vending machine wrap · gardencup"),
- ("wraps","wrap-truck-bs.jpg","Truck wrap · BS Removal"),
  ("embroidery","emb-hats-shirts.jpg","Embroidered hats & shirts"),
  ("wraps","wrap-trailer-101.jpg","Trailer wrap · 101 Seamless Gutters"),
- ("wraps","storefront.jpg","Our shop · window graphics"),
  ("apparel","apparel-custom.png","Custom apparel"),
  ("embroidery","emb-hats-black.png","Custom embroidered hats"),
- ("wraps","wrap-wall.jpg","Interior wall wrap"),
  ("printing","signs-banners.png","Custom banners & signs"),
+ ("wraps","wrap-truck-bs.jpg","Truck wrap · BS Removal"),
+ ("wraps","storefront.jpg","Our shop · window graphics"),
+ ("wraps","wrap-wall.jpg","Interior wall wrap"),
  ("embroidery","emb-towels-dark.png","Embossed robes & towels"),
  ("wraps","wrap-vending.png","Vending machine wrap"),
  ("apparel","apparel-dtf.png","DTF transfers"),
