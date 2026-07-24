@@ -455,7 +455,7 @@ def gallery():
 
 def about():
     fame = "".join(f'<span class="fame-chip">{n}</span>' for n in
-        ["Restaurants","Cafes","Gyms & wellness","Auto shops","Real estate","Food trucks","Schools","Non-profits"])
+        ["Restaurants","Cafes","Gyms & wellness","Auto shops","Real estate","Food trucks","Schools"])
     return head(f"About | {BIZ}", f"{BIZ} is a print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about","about.html") + nav("about.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
