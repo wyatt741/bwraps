@@ -14,7 +14,7 @@ import json
 from datetime import date
 
 # ---- cache-busting (bump on any css/js change) ----
-CSSV = "styles.css?v=25"
+CSSV = "styles.css?v=26"
 JSV  = "app.js?v=3"
 CHATV= "chat.js?v=4"
 
@@ -392,18 +392,17 @@ def home():
 {cta()}{footer()}'''
 
 def services():
-    secs = ""
-    for i,s in enumerate(SERVICES):
+    cards = ""
+    for s in SERVICES:
         bl = "".join(f"<li>{b}</li>" for b in s["bullets"])
         chips = "".join(f'<span class="ideal-chip">{x}</span>' for x in s["ideal"])
-        flip = " svc-row-flip" if i%2 else ""
-        secs += f'''<section class="section svc-row{flip}" id="{s["id"]}"><div class="wrap svc-row-in">
-        <div class="svc-row-art reveal"><div class="art-frame">{photo(s["id"],s["hero"],s["title"])}</div></div>
-        <div class="svc-row-copy reveal"><span class="ic-badge ic-badge-lg">{icon(s["id"])}</span><h2>{s["title"]}</h2>
+        cards += f'''<article class="prod-card" id="{s["id"]}">
+        <div class="prod-img"><img src="assets/{s["hero"]}" alt="{s["title"]}" loading="lazy"></div>
+        <div class="prod-body"><span class="ic-badge">{icon(s["id"])}</span><h2>{s["title"]}</h2>
         <p>{s["long"]}</p><ul class="ticks">{bl}</ul>
         <div class="ideal"><span class="ideal-label">Ideal for</span>{chips}</div>
         <a class="btn btn-primary cta-anim" href="contact.html">Quote this<span class="btn-ic">&rarr;</span></a></div>
-      </div></section>'''
+      </article>'''
     uses = "".join(f'<figure class="usecase"><img src="assets/{f}" alt="{t}" loading="lazy"><figcaption><strong>{t}</strong><span>{d}</span></figcaption></figure>' for f,t,d in INDUSTRIES)
     return head(f"Services | {BIZ}", f"Embroidery, custom apparel, DTF, printing, signs, and wraps in {CITY}.","services","services.html") + nav("services.html") + f'''
 <main id="main">
@@ -411,13 +410,15 @@ def services():
   <span class="eyebrow">Services</span><h1>Everything we make</h1>
   <p>Four lines, one shop, all under one roof in {CITY.split(",")[0]}. Embroidery, custom apparel and DTF, printing and signs, and vehicle wraps. Mix and match to brand your whole business, and get it out the door fast.</p>
 </div></section>
-{secs}
-<section class="section"><div class="wrap">
+<section class="section" style="padding-top:40px"><div class="wrap">
+  <div class="prod-grid stagger reveal">{cards}</div>
+</div></section>
+<section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Who we work with</span><h2>Built for local businesses</h2>
     <p>From food trucks to real estate to gyms and schools, we help {CITY.split(",")[0]} brands show up loud.</p></div>
   <div class="usecase-grid stagger reveal">{uses}</div>
 </div></section>
-<section class="section band"><div class="wrap">
+<section class="section"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">Not sure what you need?</span><h2>Tell us the goal, we'll figure out the how</h2>
     <p>New logo on 50 shirts, a truck that turns heads, a banner for Saturday. Describe it and we'll point you to the right service and a fast quote.</p></div>
   <div class="center reveal"><a class="btn btn-primary btn-lg cta-anim" href="contact.html">Start a free quote<span class="btn-ic">&rarr;</span></a></div>

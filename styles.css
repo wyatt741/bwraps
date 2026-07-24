@@ -243,6 +243,23 @@ body.menu-open .burger span:nth-child(3){transform:translateY(-7.5px) rotate(-45
 .ticks li{padding-left:30px;position:relative;font-weight:500}
 .ticks li::before{content:"";position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:100px;background:var(--band);
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e6187e' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E");background-size:13px;background-repeat:no-repeat;background-position:center}
+/* ---- services product grid (2-up cards, the core of the services page) ---- */
+.prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.prod-card{scroll-margin-top:100px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-soft);transition:transform .4s var(--ease),box-shadow .4s var(--ease),border-color .3s}
+.prod-card:hover{transform:translateY(-5px);box-shadow:var(--shadow);border-color:transparent}
+.prod-img{overflow:hidden}
+.prod-img img{width:100%;aspect-ratio:16/10;object-fit:cover;transition:transform .7s var(--ease)}
+.prod-card:hover .prod-img img{transform:scale(1.05)}
+.prod-body{display:flex;flex-direction:column;flex:1;padding:28px 28px 30px}
+.prod-body .ic-badge{margin-bottom:16px}
+.prod-body h2{font-size:clamp(1.5rem,2.6vw,2rem);margin-bottom:10px}
+.prod-body>p{color:var(--muted);font-size:1.02rem;margin-bottom:18px}
+.prod-body .ticks{margin-bottom:20px}
+.prod-body .ideal{margin-bottom:24px}
+.prod-body .btn{margin-top:auto;align-self:flex-start}
+[data-theme="dark"] .prod-card:hover{box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.07)}
+
 /* use-case showcase (services page) */
 .usecase-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .usecase{position:relative;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-soft)}
@@ -403,6 +420,7 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
   .brands-in{flex-direction:column;align-items:stretch;gap:14px}
   .brands-marquee{width:100%;min-width:0}
   .svc-grid,.feat-grid,.gal-grid,.usecase-grid,.stats{grid-template-columns:1fr 1fr;gap:12px}
+  .prod-grid{grid-template-columns:1fr}
   .gal-masonry .tile:nth-child(7n+1){grid-row:span 1}
   .gal-masonry .tile:nth-child(7n+1) img{aspect-ratio:4/3}
   .f-row{grid-template-columns:1fr}
@@ -416,10 +434,11 @@ footer{background:var(--night);color:#c8bfc7;padding:60px 0 28px}
 /* ---- mobile: center everything (phones) ---- */
 @media (max-width:600px){
   /* text blocks center */
-  .page-hero .wrap,.sec-head,.svc-row-copy,.about-copy,.svc,.feat,.tst,.cside-card{text-align:center}
-  .page-hero p,.sec-head p,.svc-row-copy>p,.about-copy p,.tst p{margin-inline:auto}
+  .page-hero .wrap,.sec-head,.svc-row-copy,.prod-body,.about-copy,.svc,.feat,.tst,.cside-card{text-align:center}
+  .page-hero p,.sec-head p,.svc-row-copy>p,.prod-body>p,.about-copy p,.tst p{margin-inline:auto}
   /* icon badges + eyebrows sit centered above their centered text */
-  .svc .ic-badge,.feat .ic-badge,.svc-row-copy .ic-badge{margin-inline:auto}
+  .svc .ic-badge,.feat .ic-badge,.svc-row-copy .ic-badge,.prod-body .ic-badge{margin-inline:auto}
+  .prod-body .btn{align-self:center}
   .svc-row-copy .eyebrow{display:inline-flex}
   /* inline-flex groups (buttons, more-links, chips, stars) recenter via the parent's text-align,
      but flex containers need their own justify */
