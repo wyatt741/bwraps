@@ -41,7 +41,7 @@ def icon(name): return ICON.get(name, "")
 
 # why-choose-us features: (icon, title, body)
 FEATURES = [
- ("pin","Right here in Surprise","A real local shop you can walk into, not an online middleman."),
+ ("pin","Right here in Surprise","A real shop you can walk into, not an online middleman."),
  ("bolt","Fast turnarounds","We move quick so you hit your event, launch, or deadline."),
  ("palette","Everything in house","Print, wrap, and stitch under one roof, so your branding stays consistent."),
  ("heart","Small-batch friendly","One hat or a thousand shirts, we treat every order like it matters."),
@@ -179,7 +179,7 @@ def footer():
     return f'''<footer><div class="wrap foot-grid">
   <div class="foot-brand">
     {brandmark("brand-foot")}
-    <p>Custom printing, wraps, and embroidery in {CITY}. Local, fast, and a little bit loud.</p>
+    <p>Custom printing, wraps, and embroidery in {CITY}. Fast, friendly, and a little bit loud.</p>
     <div class="foot-social">
       <a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
       <a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">Facebook</a>
@@ -194,7 +194,7 @@ def footer():
     <span class="foot-note">{HOURS} &middot; Sat-Sun closed</span>
   </div>
 </div>
-<div class="legal wrap"><span>&copy; 2026 {BIZ}. All rights reserved.</span><span>Proudly local to {CITY}.</span></div>
+<div class="legal wrap"><span>&copy; 2026 {BIZ}. All rights reserved.</span><span>Serving {CITY.split(",")[0]} and the West Valley.</span></div>
 </footer>
 {chat_widget()}
 <script src="{JSV}"></script>
@@ -261,7 +261,7 @@ GALLERY = [
  ("wraps","wrap-veteran.jpg","Truck wrap · Veteran & Family Cleanup"),
  ("apparel","apparel-tumblers.jpg","Custom printed tumblers"),
  ("embroidery","emb-machine.jpg","In the shop · embroidery in progress"),
- ("wraps","wrap-boutique-suv.jpg","SUV wrap · local boutique"),
+ ("wraps","wrap-boutique-suv.jpg","SUV wrap · boutique client"),
  ("printing","signs-cuddlypet.jpg","Storefront window signs · Cuddly Pet"),
  ("embroidery","emb-polo-cap.jpg","Embroidered polo & cap set"),
  ("wraps","wrap-flag-perf.jpg","Rear window perf · American flag"),
@@ -336,7 +336,7 @@ def home():
     brands = brow + brow
     tst = "".join(f'<blockquote class="tst"><div class="tst-stars">★★★★★</div><p>&ldquo;{q}&rdquo;</p><cite>{n}<span>{r}</span></cite></blockquote>'
                   for n,r,q in TESTIMONIALS)
-    return head(f"{BIZ} | {TAG}", f"Custom printing, wraps, and embroidery in {CITY}. Get a fast, free quote from a local shop that does it all.","home","index.html") + nav("index.html") + f'''
+    return head(f"{BIZ} | {TAG}", f"Custom printing, wraps, and embroidery in {CITY}. Get a fast, free quote from the shop that does it all.","home","index.html") + nav("index.html") + f'''
 <main id="main">
 <section class="hero"><div class="wrap hero-in">
   <div class="hero-copy reveal">
@@ -370,13 +370,13 @@ def home():
 
 <section class="section band"><div class="wrap">
   <div class="sec-head reveal"><span class="eyebrow">Recent work</span><h2>A little taste of the shop</h2>
-    <p>Real jobs, real local businesses. Tap through the full gallery for more.</p></div>
+    <p>Real jobs for real businesses. Tap through the full gallery for more.</p></div>
   <div class="gal-grid gal-teaser stagger reveal">{teaser}</div>
   <div class="center"><a class="btn btn-dark btn-lg" href="gallery.html">View the full gallery<span class="btn-ic">&rarr;</span></a></div>
 </div></section>
 
 <section class="section"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Why Choose Us</span><h2>Local shop, big-league output</h2></div>
+  <div class="sec-head center reveal"><span class="eyebrow">Why Choose Us</span><h2>Small shop, big-league output</h2></div>
   <div class="feat-grid stagger reveal">
     {"".join(f'<div class="feat"><span class="ic-badge">{icon(k)}</span><h3>{t}</h3><p>{d}</p></div>' for k,t,d in FEATURES)}
   </div>
@@ -384,7 +384,7 @@ def home():
 
 <section class="section band"><div class="wrap">
   <div class="sec-head center reveal"><span class="eyebrow">★★★★★ · 5.0 on Google</span><h2>What customers say</h2>
-    <p>Real 5-star reviews from local businesses we've printed, wrapped, and stitched for.</p></div>
+    <p>Real 5-star reviews from the businesses we've printed, wrapped, and stitched for.</p></div>
   <div class="tst-grid stagger reveal">{tst}</div>
   <div class="center" style="margin-top:32px"><a class="btn btn-ghost" href="{GOOGLE}" target="_blank" rel="noopener">Read all reviews on Google<span class="btn-ic">&rarr;</span></a></div>
 </div></section>
@@ -414,7 +414,7 @@ def services():
   <div class="prod-grid stagger reveal">{cards}</div>
 </div></section>
 <section class="section band"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Who we work with</span><h2>Built for local businesses</h2>
+  <div class="sec-head center reveal"><span class="eyebrow">Who we work with</span><h2>Built for busy businesses</h2>
     <p>From food trucks to real estate to gyms and schools, we help {CITY.split(",")[0]} brands show up loud.</p></div>
   <div class="usecase-grid stagger reveal">{uses}</div>
 </div></section>
@@ -434,14 +434,14 @@ def gallery():
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">Gallery</span><h1>See the work</h1>
-  <p>Real jobs for real local businesses, truck and trailer wraps, embroidered hats and apparel, DTF, banners and signage. Every photo here left our shop in {CITY.split(",")[0]}. Tap any one to view it bigger.</p>
+  <p>Real jobs for real businesses, truck and trailer wraps, embroidered hats and apparel, DTF, banners and signage. Every photo here left our shop in {CITY.split(",")[0]}. Tap any one to view it bigger.</p>
 </div></section>
 <section class="section" style="padding-top:24px"><div class="wrap">
   <div class="stats reveal">
     <div class="stat"><strong>5.0★</strong><span>rating on Google</span></div>
     <div class="stat"><strong>50+</strong><span>5-star reviews</span></div>
     <div class="stat"><strong>In-house</strong><span>print · wrap · stitch</span></div>
-    <div class="stat"><strong>Fast</strong><span>local turnaround</span></div>
+    <div class="stat"><strong>Fast</strong><span>in-house turnaround</span></div>
   </div>
 </div></section>
 <section class="section" style="padding-top:24px"><div class="wrap">
@@ -461,7 +461,7 @@ def gallery():
 def about():
     fame = "".join(f'<span class="fame-chip">{n}</span>' for n in
         ["Restaurants","Cafes","Gyms & wellness","Auto shops","Real estate","Food trucks","Schools","Non-profits"])
-    return head(f"About | {BIZ}", f"{BIZ} is a local print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about","about.html") + nav("about.html") + f'''
+    return head(f"About | {BIZ}", f"{BIZ} is a print, wrap, and embroidery shop in {CITY}. Meet the team behind the work.","about","about.html") + nav("about.html") + f'''
 <main id="main">
 <section class="page-hero"><div class="wrap reveal">
   <span class="eyebrow">About</span><h1>Your neighbors with a print shop</h1>
@@ -469,7 +469,7 @@ def about():
 <section class="section"><div class="wrap about-in">
   <div class="about-copy reveal">
     <p class="lead">{BIZ} started with a simple idea: give {CITY} a creative shop that can print it, wrap it, and stitch it, without sending you to three different vendors.</p>
-    <p>We're a local team that treats a one-off gift with the same care as a full fleet wrap. Whether you're a food truck needing a fresh look, a gym motivating members with a wall wrap, or a team that wants spirit wear with actual spirit, we've got you.</p>
+    <p>We're a small team that treats a one-off gift with the same care as a full fleet wrap. Whether you're a food truck needing a fresh look, a gym motivating members with a wall wrap, or a team that wants spirit wear with actual spirit, we've got you.</p>
     <p>Everything happens in house, so your branding stays consistent and your timeline stays short.</p>
     <div class="about-facts">
       <div><strong>{ADDR.split(",")[0]}</strong><span>Dysart Rd, Surprise</span></div>
@@ -480,7 +480,7 @@ def about():
   <div class="about-art reveal d1"><div class="art-frame">{photo("embroidery","emb-thread.png","In the shop")}</div></div>
 </div></section>
 <section class="section band"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud to work with local</h2>
+  <div class="sec-head center reveal"><span class="eyebrow">Wall of Fame</span><h2>Proud of who we work with</h2>
     <p>We serve a whole range of businesses around Surprise:</p></div>
   <div class="fame reveal">{fame}</div>
 </div></section>
