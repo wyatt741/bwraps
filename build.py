@@ -179,7 +179,7 @@ def footer():
     return f'''<footer><div class="wrap foot-grid">
   <div class="foot-brand">
     {brandmark("brand-foot")}
-    <p>Custom printing, wraps, and embroidery in {CITY}. Fast, friendly, and a little bit loud.</p>
+    <p>Custom printing, wraps, and embroidery in {CITY}. Everything in house, out the door fast.</p>
     <div class="foot-social">
       <a href="{IG}" target="_blank" rel="noopener" aria-label="Instagram">Instagram</a>
       <a href="{FB}" target="_blank" rel="noopener" aria-label="Facebook">Facebook</a>
