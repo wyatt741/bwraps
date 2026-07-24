@@ -81,7 +81,7 @@ LD_JSON = json.dumps({
   "openingHoursSpecification":[{"@type":"OpeningHoursSpecification",
     "dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"17:00"}],
   "sameAs":[IG,FB,TIKTOK],
-  "aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"20"},
+  "aggregateRating":{"@type":"AggregateRating","ratingValue":"5.0","reviewCount":"50"},
 }, separators=(",",":"))
 
 # "Contact" is a header nav link; the animated "Get a quote" button (also -> contact.html) is the primary CTA.
