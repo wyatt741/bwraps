@@ -22,6 +22,9 @@ force width, the flaky pane lies about viewport) in [docs/SESSION_STATE_2026-07-
 **DNS:** Cloudflare zone bwraps1.com created (Free, records DNS-only, Duda still live) — **PENDING GoDaddy
 nameserver swap to `cris.ns.cloudflare.com` + `naya.ns.cloudflare.com`** (needs owner's GoDaddy login).
 New-site cutover is prepped: `bash docs/cutover.sh` (local) once Path-B DNS records point at GitHub.
+**AI chatbot:** hybrid bot deployed + TESTED (Cloudflare Worker `bwraps-chat`, in `worker/`) — free-text=AI,
+wizard=deterministic. Parked in DEMO mode; activate at cutover via `chat.bwraps1.com` + `WORKER_URL`.
+**site-template** (separate repo) is now a real scaffold built from this site.
 
 ## Files
 | Path | Purpose |
