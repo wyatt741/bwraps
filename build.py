@@ -16,7 +16,7 @@ from datetime import date
 # ---- cache-busting (bump on any css/js change) ----
 CSSV = "styles.css?v=26"
 JSV  = "app.js?v=3"
-CHATV= "chat.js?v=5"
+CHATV= "chat.js?v=6"
 
 # ---- dark-mode: default dark (like anderson-it), toggle persists to localStorage ----
 FOUC   = '<script>(function(){try{var t=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>'
@@ -513,7 +513,7 @@ def contact():
   <aside class="contact-side reveal d1">
     <div class="cside-card"><h3>Call or text</h3><a class="big-phone" href="tel:{PHONE_TEL}">{PHONE}</a></div>
     <div class="cside-card"><h3>Email</h3><a href="mailto:{EMAIL}">{EMAIL}</a></div>
-    <div class="cside-card"><h3>Visit the shop</h3><p>{ADDR}</p><a href="{MAPS}" target="_blank" rel="noopener">Get directions &rarr;</a></div>
+    <div class="cside-card"><h3>Visit the shop</h3><a class="cside-addr" href="{MAPS}" target="_blank" rel="noopener">{ADDR}</a><a href="{MAPS}" target="_blank" rel="noopener">Get directions &rarr;</a></div>
     <div class="cside-card"><h3>Hours</h3><p>{HOURS}<br>Saturday &amp; Sunday closed</p></div>
     <div class="cside-card"><h3>Follow</h3><div class="cside-social"><a href="{IG}" target="_blank" rel="noopener">Instagram</a><a href="{FB}" target="_blank" rel="noopener">Facebook</a><a href="{TIKTOK}" target="_blank" rel="noopener">TikTok</a></div></div>
   </aside>

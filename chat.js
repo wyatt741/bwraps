@@ -18,6 +18,9 @@
       nudgeX = document.getElementById("cw-nudge-x");
 
   var PHONE = "928-230-8525";
+  var ADDR = "16551 N Dysart Rd #107, Surprise, AZ 85378";
+  var MAPS = "https://maps.app.goo.gl/eGQwKDuvYefatZDTA";   // the address text becomes a tappable maps link
+  var ADDR_RE = ADDR.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   var AI = !!WORKER_URL;                 // AI mode when a Worker URL is set, else demo mode
   var history = [];                      // {role, content} for the AI
   var transcript = [];                   // {role, text} full visible log -> emailed with a lead
@@ -29,12 +32,13 @@
   function scroll() { log.scrollTop = log.scrollHeight; }
   function setInput(on, ph) { input.disabled = !on; sendB.disabled = !on; input.placeholder = ph || "Type your message..."; }
   function linkify(box, text) {
-    var re = /(https?:\/\/[^\s)]+)|(\d{3}-\d{3}-\d{4})/g, last = 0, m;
+    var re = new RegExp("(https?:\\/\\/[^\\s)]+)|(\\d{3}-\\d{3}-\\d{4})|(" + ADDR_RE + ")", "g"), last = 0, m;
     while ((m = re.exec(text))) {
       if (m.index > last) box.appendChild(document.createTextNode(text.slice(last, m.index)));
       var a = document.createElement("a");
       if (m[1]) { a.href = m[1]; a.target = "_blank"; a.rel = "noopener"; a.textContent = m[1].replace(/^https?:\/\//, "").replace(/\/$/, ""); }
-      else { a.href = "tel:+1" + m[2].replace(/\D/g, ""); a.textContent = m[2]; }
+      else if (m[2]) { a.href = "tel:+1" + m[2].replace(/\D/g, ""); a.textContent = m[2]; }
+      else { a.href = MAPS; a.target = "_blank"; a.rel = "noopener"; a.textContent = m[3]; }   // address -> maps
       box.appendChild(a); last = m.index + m[0].length;
     }
     if (last < text.length) box.appendChild(document.createTextNode(text.slice(last)));
