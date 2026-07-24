@@ -15,8 +15,12 @@ name + email/phone → email transcript); Worker `/lead` now takes email-OR-phon
 make your brand impossible to miss", trimmed subhead, new maps-linked **"Come see us in person"** address+hours
 block (CSS v24–25); (6) **chat status-dot fix** (was a collapsed green sliver → `inline-block`); (7) **services
 page core = 2-up `.prod-grid`** of product cards, collapses to 1-col ≤600, section ids preserved (CSS v26);
-(8) **wizard name-step wording** → "Now let's grab your contact info. What's your name?" (chat.js v5). Full
-detail + evidence + decisions in [docs/SESSION_STATE_2026-07-24.md](docs/SESSION_STATE_2026-07-24.md).
+(8) **wizard name-step wording** → "Now let's grab your contact info. What's your name?" (chat.js v5);
+(9) **address→Maps linkify** on the contact card + chatbot (chat.js v6); (10) **"local" copy trim** across
+site + worker (kept ADDR/Surprise/schema for SEO); (11) **NFC Google-review sign** (4×6" print, saved to
+OneDrive — QR deep-links to the write-review box via verified Place ID `ChIJb60wS4FFK4cR5IdPmeDMBR4`);
+(12) **merged SEO + mobile-center + chat-dot-fix UP into `site-template`** (prod-grid + linkify queued).
+Full detail + evidence + decisions in [docs/SESSION_STATE_2026-07-24.md](docs/SESSION_STATE_2026-07-24.md).
 Gotchas: HTML isn't cache-busted (hard-refresh); Browser pane flaky (drive chat via javascript_tool, verify
 via forced-width scrollWidth + computed styles); dead `.svc-row-*` CSS left for later cleanup. Owner still
 owes: FormSubmit activation, GoDaddy nameserver swap, reviewer names, Google-listing phone fix.
