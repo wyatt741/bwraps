@@ -418,11 +418,6 @@ def services():
     <p>From food trucks to real estate to gyms and schools, we help {CITY.split(",")[0]} brands show up loud.</p></div>
   <div class="usecase-grid stagger reveal">{uses}</div>
 </div></section>
-<section class="section"><div class="wrap">
-  <div class="sec-head center reveal"><span class="eyebrow">Not sure what you need?</span><h2>Tell us the goal, we'll figure out the how</h2>
-    <p>New logo on 50 shirts, a truck that turns heads, a banner for Saturday. Describe it and we'll point you to the right service and a fast quote.</p></div>
-  <div class="center reveal"><a class="btn btn-primary btn-lg cta-anim" href="contact.html">Start a free quote<span class="btn-ic">&rarr;</span></a></div>
-</div></section>
 </main>{cta()}{footer()}'''
 
 def gallery():
