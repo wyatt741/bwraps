@@ -16,7 +16,7 @@ from datetime import date
 # ---- cache-busting (bump on any css/js change) ----
 CSSV = "styles.css?v=25"
 JSV  = "app.js?v=3"
-CHATV= "chat.js?v=3"
+CHATV= "chat.js?v=4"
 
 # ---- dark-mode: default dark (like anderson-it), toggle persists to localStorage ----
 FOUC   = '<script>(function(){try{var t=localStorage.getItem("theme")||"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>'

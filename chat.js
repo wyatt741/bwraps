@@ -156,7 +156,7 @@
     { key: "service", q: "Let's build your quote! What do you need?", opts: ["Embroidery", "Apparel & DTF", "Printing & Signs", "Wraps", "Not sure yet"] },
     { key: "size",    q: "Roughly how many pieces (or how big a job)?", opts: ["Just 1-5", "6-24", "25-100", "100+ / not sure"] },
     { key: "details", q: "Tell me a bit about the project, colors, sizes, deadline, or skip.", text: true, optional: true },
-    { key: "name",    q: "Great. What's your name?", text: true },
+    { key: "name",    q: "Almost there, what's your name?", text: true },
     { key: "email",   q: "Best email for your quote?", text: true, email: true },
     { key: "phone",   q: "A phone number in case we need it? Optional, type or skip.", text: true, optional: true }
   ];
