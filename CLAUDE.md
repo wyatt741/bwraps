@@ -19,7 +19,7 @@ page core = 2-up `.prod-grid`** of product cards, collapses to 1-col ≤600, sec
 (9) **address→Maps linkify** on the contact card + chatbot (chat.js v6); (10) **"local" copy trim** across
 site + worker (kept ADDR/Surprise/schema for SEO); (11) **NFC Google-review sign** (4×6" print, saved to
 OneDrive — QR deep-links to the write-review box via verified Place ID `ChIJb60wS4FFK4cR5IdPmeDMBR4`);
-(12) **merged SEO + mobile-center + chat-dot-fix UP into `site-template`** (prod-grid + linkify queued).
+(12) **merged all 5 wins UP into `site-template`** (SEO, mobile-center, chat-dot-fix, 2-up prod-grid, address linkify — nothing queued); (13) schema `reviewCount` set to **50** (kept as "50+", real Google count is 51).
 Full detail + evidence + decisions in [docs/SESSION_STATE_2026-07-24.md](docs/SESSION_STATE_2026-07-24.md).
 Gotchas: HTML isn't cache-busted (hard-refresh); Browser pane flaky (drive chat via javascript_tool, verify
 via forced-width scrollWidth + computed styles); dead `.svc-row-*` CSS left for later cleanup. Owner still
